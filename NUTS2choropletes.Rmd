@@ -6,10 +6,13 @@ output: rmarkdown::tufte_handout
 ---
 
 # Introduction
+This document shows how to create a choroplete map from Eurostat Data using R. For this example I aimed to automate the entire process from downloading the data to the creation of the figure. The idea is to present an entirely reproducible process. The text shows the overall process from a birds-eye perspective. In particular it is not intended to serve as a general introdution to R[^quickR] or a discussion of the Pros and cons of using choropletes to display data. 
 
-This document shows how to create a choroplete map from Eurostat Data using R. For this example I aimed to automate the entire process from downloading the data to the creation of the figure. The idea is to present an entirely reproducible process. The text shows the overall process from a birds-eye perspective. In particular it is not intended to serve as a general introdution to R[^quickR] or a discussion of the Pros and cons of using choropletes to display data. In addition I plan to create other handouts in the future. Please let me know if you would like to request a specific topic.
+This tutorial shows the process of creating plot in R that visualizes the EU 2013 unemployment rates in the EU as percentage of total population. The final graphic will be a so-called choroplete map. This is a map where geographical regions are coloured by some kind of metric. For this kind of figure to work well the individual regions should be roughly about the same size. For a more in-depth discussion you may refer to Leland Wilkinsons Grammar of Graphics [^Wilkinson] which we have available at Ecologic. The theoretical foundations presented in this book lay the foundations for the `ggplot2`package by Hadley Wickham [^Wickham], the approach used in this document 
 
-<!-- Explain content of figure here --> 
+In case you want to reproduce the figures in this document you simply copy-paste the code snippets into your copy of R. If you prefer the original source files, please send me an email and I will provide them.
+
+I plan to create other handouts in the future. Please let me know if you would like to request a specific topic.
 
 
 
@@ -31,8 +34,9 @@ library(xtable)
 
 
 # Getting the unemployment data
+Eurostat provides several interfaces for access to data ranging from the online data-browser over the 'bulk-download-facility' to programmatic interfaces using `REST` or `SOAP`^[`REST` and `SOAP` the names of internet protocols. You don't have to bother with the details.]. While each of these interfaces has its own merits, a programmatic access to the `REST` interface is shown below. A programmatic access ensures that the creation of the figure is indeed reproducible. Provided access to the script used the process of creating the figure is unambiguously defined. In addition this approach allows the re-use and modularization of individual steps at a later stage.
 
-Use the `getTimeSeries()` function to download the dataset from Eurostat. R provides some facilities to browse the Eurostat database.  The details of these facilities and an explanation how to define the arguments will be topic of another handout. The code below basically tells R to got to the Eurostat website, look for a dataset called `tgs00010` and from this to select annual data (that's the `A`), measured as percentage (the `PC` part) for both sexes (`T` stands for total) and for all available geographic entities (`*` means 'take all'). The `start` and `stop` arguments define the timespan for which we want to get the data.
+We use the `getTimeSeries()` function to download the dataset from Eurostat. R provides some facilities to browse the Eurostat database.  The details of these facilities and an explanation how to define the arguments will be topic of another handout. The code below basically tells R to got to the Eurostat website, look for a dataset called `tgs00010` and from this to select annual data (that's the `A`), measured as percentage (the `PC` part) for both sexes (`T` stands for total) and for all available geographic entities (`*` means 'take all'). The `start` and `stop` arguments define the timespan for which we want to get the data.
 ```{r get_data,message=FALSE,tidy=FALSE}
 # Get the data formatted as list from Eurostat
 tsList = getTimeSeries('EUROSTAT',
@@ -45,14 +49,14 @@ The next step is to convert the downloaded data into a format suitable for furth
 # Convert the list into a dataframe
 tsDf <- sdmxdf(tsList,meta = T)
 ```
-
+The table below shows the resulting data which is now stored in a so-called `data-frame`. Without going into too much detail, a `data-frame` is basically the way most R methods read data. It is basically a collection of variables of the same length. 
 ```{r show_tsDf, results='asis',echo=FALSE}
 library(xtable)
 options(xtable.comment = FALSE)
 options(xtable.booktabs = TRUE)
 xtable(head(tsDf[c(2,3,5:8)]), caption = "First rows of tsDf")
 ```
-
+A last step we need to take for the 
 
 
 
@@ -201,6 +205,7 @@ If you'd like to place ancillary information in the margin without the sidenote 
 
 
 <!-- References --> 
+[^Wickham] Hadley Wickhams `ggplot2`is a very versatile and popular graphics package for R. http://ggplot2.org/
 [^tufte_latex]: https://code.google.com/p/tufte-latex/
 [^books_be]: http://www.edwardtufte.com/tufte/books_be
 [^howto_install]: How to install packages in R http://www.dummies.com/how-to/content/how-to-install-load-and-unload-packages-in-r.html
