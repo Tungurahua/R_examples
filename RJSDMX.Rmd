@@ -1,28 +1,142 @@
 ---
-title: "Tufte Handout"
-author: "John Smith"
-date: "August 13th, 2014"
+title: "Accessing RSDMX-data from R"
+author: "Albrecht Gradmann"
+date: "March 10th, 2015"
 output: rmarkdown::tufte_handout
 ---
 
 # Introduction
+Reproducibility 
+[^sdmxorg]
+[^rjsdmx_pres]
 
+We want to reproduce a figure about the 'Stucture of utilised agricultural area, 2007(% of UAA)
 \begin{figure}
-\includegraphics{resources/Capture.PNG}
+\includegraphics{resources/fig25_eurostat.PNG}
 \caption{An equation}
 \end{figure}
-The Tufte-\LaTeX\ [^tufte_latex] document classes define a style similar to the style Edward Tufte uses in his books and handouts. Tufte’s style is known for its extensive use of sidenotes, tight integration of graphics with text, and well-set typography. 
 
-# Headings
 
-This style provides a- and b-heads (that is, `#` and `##`), demonstrated above.
-An error is emitted if you try to use `###` and smaller headings.
 
-\newthought{In his later books}[^books_be], Tufte starts each section with a bit of vertical space, a non-indented paragraph, and sets the first few words of the sentence in small caps. To accomplish this using this style, use the `\newthought` command as demonstrated at the beginning of this paragraph.
 
-# Figures
 
-## Margin Figures
+
+This example shows how to use this technology to programmatically download data from Eurostat, re-format and subset the retrieved data and create a figure using the ggplot2[^ggplot2] package. To have a 
+
+[^sdmxorg]:Homepage of the Statistical Data and Metadata eXchange (SDMX)  http://sdmx.org/
+[^rjsdmx_pres]: Mattiocco, A. (2013): Using SDMX data in statistical packages and tools (EXCEL, R, Matlab, SAS). Presentation. http://tinyurl.com/RJSDMX-pres
+[^ggplot2]: Homepage of Hadley Wickhams ggplot2.http://ggplot2.org/
+
+# Setting the scene
+You can recreate the results presented here by running the source-code snippets in a R-session. If you want to avoid copy-pasting the snippets from the pdf into a R session, you can also run the example from the source-code of this document which I can provide you upon request.
+
+Before going through the individual steps presented below, you need to load the following libraries:
+
+```{r libraries,results='hide',tidy=FALSE,message=FALSE}
+library(ggplot2)  # Hadley Wickhams plotting package
+library(RJSDMX)   # Query Eurostat REST-interface
+```
+```{r layout_libs,echo=FALSE,message=FALSE}
+library(xtable)
+```
+If you receive error messages at this stage, you probably have not yet installed these packages on your system.  Package installation in R is a simple and standard task and it can be done in several ways. For more information, you can either type  `help("install.packages")` in the R Console or look for one of the numerous tutorials on the internet[^howto_install]. 
+
+Although I tried to design this as a self-contained example it might not work as expected on your system. In that case, please do not hesitate to get in touch directly.
+
+
+[^howto_install]: How to install packages in R http://tinyurl.com/nh7whtp
+
+
+ 
+
+
+# Steps
+The following sections  
+
+## Define the REST-Call
+
+```{r getFlows}
+getFlows(provider = "EUROSTAT",pattern = "ef_ov_lusum")
+```
+
+
+```{r getDimensions}
+names(getDimensions(provider = "EUROSTAT",dataflow = "ef_ov_lusum"))
+```
+
+```{r getCodesFREQ}
+FREQ_Codes <- getCodes(provider = "EUROSTAT",
+           flow = "ef_ov_lusum",
+           dimension = "FREQ")
+
+data.frame(unlist(FREQ_Codes))
+
+```
+
+```{r getCodesTERRTYPO}
+TERRTYPO_Codes <- getCodes(provider = "EUROSTAT",
+           flow = "ef_ov_lusum",
+           dimension = "TERRTYPO")
+
+data.frame(unlist(TERRTYPO_Codes))
+```
+
+```{r getCodesVARIABLE}
+VARIABLE_Codes <- getCodes(provider = "EUROSTAT",
+           flow = "ef_ov_lusum",
+           dimension = "VARIABLE")
+
+View(data.frame(unlist(VARIABLE_Codes)))
+```
+
+```{r getCodesUNIT}
+UNIT_Codes <- getCodes(provider = "EUROSTAT",
+           flow = "ef_ov_lusum",
+           dimension = "UNIT")
+
+data.frame(unlist(UNIT_Codes))
+```
+
+```{r getCodesAGRAREA}
+AGRAREA_Codes <- getCodes(provider = "EUROSTAT",
+           flow = "ef_ov_lusum",
+           dimension = "AGRAREA")
+
+data.frame(unlist(AGRAREA_Codes))
+```
+
+A.TOTAL.TOTAREA+D18+G+D+F.HA.TOTAL.*
+```{r}
+listSdmx <- getSDMX(provider = "EUROSTAT",id = "ef_ov_lusum.A.TOTAL.TOTAREA+D18+G+D+F.HA.TOTAL.*",start = "2007",end="2007")
+```
+
+```{r}
+dfSdmx <- sdmxdf(listSdmx,meta = T)
+str(dfSdmx2)
+dfSdmx <- dfSdmx[,c("GEO","VARIABLE","OBS")]
+dfSdmx2$OBSpc
+
+library(plyr)
+
+avg <- function(x){x/sum(x)}
+
+head(ddply(dfSdmx,c("GEO","Vari"),D=avg(OBS)))
+
+```
+
+```{r}
+
+gg <- ggplot(data=dfSdmx, aes(x=GEO,y=OBS,fill=VARIABLE)  )
+gg <- gg + geom_bar(stat="identity",) 
+gg
+```
+
+
+
+
+The programmatic approach to downloading data from Eurostat requires the definition of an \emph{identifier} to specify  
+
+## Get the data
 
 Images and graphics play an integral role in Tufte's work. To place figures or tables in the margin you can use the `fig.margin` knitr chunk option. For example:
 
