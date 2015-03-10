@@ -1,0 +1,103 @@
+---
+title: "Albrecht Gradmann"
+author: "John Smith"
+date: "August 13th, 2014"
+output: rmarkdown::tufte_handout
+---
+
+```{r setscene, message=FALSE}
+library(rgeos)
+library(rgdal) # needs gdal > 1.11.0
+library(ggplot2)
+library(raster)
+library(ggmap)
+library(RJSDMX)
+```
+
+
+
+
+
+# Defining the map theme
+```{r deftheme, message=FALSE,tidy=FALSE}
+# map theme
+#devtools::source_gist("https://gist.github.com/hrbrmstr/33baa3a79c5cfef0f6df")
+theme_map <- function(base_size=9, base_family="") {
+  require(grid)
+  theme_bw(base_size=base_size, base_family=base_family) %+replace%
+    theme(
+      axis.line=element_blank(),
+      axis.text=element_blank(),
+      axis.ticks=element_blank(),
+      axis.title=element_blank(),
+      panel.background=element_blank(),
+      panel.border=element_blank(),
+      panel.grid=element_blank(),
+      panel.margin=unit(0, "lines"),
+      plot.background=element_blank(),
+      legend.justification = c(0,0), 
+      legend.position = c(0,0)
+    )
+}
+```
+
+
+## Get Administrative data
+
+
+You can arrange for figures to span across the entire page by using the `fig.fullwidth` chunk option. 
+\newpage
+
+```{r prefigga,echo=FALSE,message=FALSE}
+
+# Get administrative boundaries for Germany
+gadm1 <- getData('GADM', country='DEU', level=1)
+
+# Fortify to use with ggplot
+adm1 <- fortify(gadm1)
+
+# Generate Labeldata
+blnames <- as.data.frame(coordinates(gadm1))
+blnames$label <- gadm1@data$NAME_1 
+names(blnames) <- c("x","y","label")
+
+# Tweak text positions
+blnames[blnames$label=="Brandenburg","y"] <- 52.15
+blnames[blnames$label=="Sachsen-Anhalt","y"] <- 51.8
+blnames[blnames$label=="Berlin","label"] <- "B"
+blnames[blnames$label=="Hamburg","label"] <- "HH"
+blnames[blnames$label=="Bremen","label"] <- "HB"
+```
+
+```{r , figga, fig.width = 6, fig.height = 9, dev='tikz',fig.cap = "Full width figure",message=FALSE}
+
+# make the map
+gg <- ggplot()
+gg <- gg + theme_map()
+gg <- gg + geom_map(data=adm1, map=adm1,
+                    aes(map_id=id, x=long, y=lat, group=group),
+                    color="#ffffff", fill="#bbbbbb", size=0.25)
+#gg <- gg + geom_point(data=blnames, aes(x=x, y=y))
+gg <- gg + geom_text(data=blnames, aes(label=label, x=x, y=y), size=3)
+gg <- gg + coord_map()
+gg <- gg + labs(x="", y="", title="") #+ theme(plot.title=element_text(vjust=-3))
+gg <- gg + annotate("text",x =13.5 ,y = 50 ,label="Stadtstaaten\nB   Berlin\nHB   Bremen\nHH    Hamburg",size=3,hjust=0) 
+gg
+#ggsave("gg.pdf",plot = gg)
+
+```
+
+Note the use of the `fig.width` and `fig.height` chunk options to establish the proportions of the figure. Full width figures look much better if their height is minimized.
+
+## Main Column Figures
+
+[^font_set]:http://blog.revolutionanalytics.com/2012/09/how-to-use-your-favorite-fonts-in-r-charts.html
+
+
+
+
+
+
+
+
+
