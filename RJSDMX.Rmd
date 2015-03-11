@@ -17,10 +17,11 @@ Reproducibility
 [^sdmxorg]
 [^rjsdmx_pres]
 
-We want to reproduce a figure about the 'Stucture of utilised agricultural area, 2007(% of UAA)
+
+We want to reproduce a figure about the 'Stucture of utilised agricultural area, 2007(% of UAA) [^statcc]
 \begin{figure}
-\includegraphics{resources/Capture.PNG}
-\caption{An equation}
+\includegraphics{resources/fig25_eurostat.PNG}
+\caption{An equation }
 \end{figure}
 
 
@@ -33,6 +34,9 @@ This example shows how to use this technology to programmatically download data 
 [^sdmxorg]:Homepage of the Statistical Data and Metadata eXchange (SDMX)  http://sdmx.org/
 [^rjsdmx_pres]: Mattiocco, A. (2013): Using SDMX data in statistical packages and tools (EXCEL, R, Matlab, SAS). Presentation. http://tinyurl.com/RJSDMX-pres
 [^ggplot2]: Homepage of Hadley Wickhams ggplot2.http://ggplot2.org/
+[^statcc]: EUROSTAT 2010: Using official statistics to calculate greenhouse gas emissions - A statistical guide. http://tinyurl.com/stat-guide-cc
+
+
 
 # Setting the scene
 You can recreate the results presented here by running the source-code snippets in a R-session. If you want to avoid copy-pasting the snippets from the pdf into a R session, you can also run the example from the source-code of this document which I can provide you upon request.
@@ -74,14 +78,28 @@ getFlows(provider = "EUROSTAT",pattern = "ef_ov_lusum")
 names(getDimensions(provider = "EUROSTAT",dataflow = "ef_ov_lusum"))
 ```
 
-```{r getCodesFREQ,results='markup'}
-FREQ_Codes <- getCodes(provider = "EUROSTAT",
-           flow = "ef_ov_lusum",
-           dimension = "FREQ")
+```{r getCodes,message=TRUE, results='markup'}
+FREQ_Codes <- getCodes(provider = "EUROSTAT",  
+                       flow = "ef_ov_lusum",
+                       dimension = "FREQ")
 
-data.frame(unlist(FREQ_Codes))
+data.frame(codes=names(FREQ_Codes),
+                             labels=unlist(FREQ_Codes),
+                             row.names=NULL)
 
 ```
+
+\begin{figure}
+\includegraphics{resources/Eurostat_REST.PNG}
+\caption{An equation }
+\end{figure}
+
+
+[^restbuild]
+
+[^restbuild]: Query Builder at Eurostat. Only available for limited numberof datasets. http://ec.europa.eu/eurostat/web/sdmx-web-services/query-builder
+
+
 ```{r getCodesVARIABLE}
 VARIABLE_Codes <- getCodes(provider = "EUROSTAT",
            flow = "ef_ov_lusum",
@@ -89,11 +107,16 @@ VARIABLE_Codes <- getCodes(provider = "EUROSTAT",
 
 VARIABLE_Codes <- data.frame(VARIABLE=names(VARIABLE_Codes),
                              labels=unlist(VARIABLE_Codes),
-                             row.names=NULL)
+row.names=NULL)
 ```
 
 [^fss-slov]
 [^fss-slov]: Statistics in Focus 87/2007: Farm Structure in Slovenia 2007 http://tinyurl.com/fss-slov
+\begin{figure}
+\centering
+\includegraphics[width=8cm]{resources/Land_use_by_size_of_the_farms,_Slovenia,_2007.PNG}
+\caption{An equation }
+\end{figure}
 
 A.TOTAL.TOTAREA+D18+G+D+F.HA.TOTAL.*
 ```{r getData,cache=TRUE}
@@ -117,19 +140,20 @@ dfSdmx <-
 
 # Re-order levels
 dfSdmx$GEO <-  factor(dfSdmx$GEO, levels = rev(levels(dfSdmx$GEO)))
-# Re-name some levels for smaller legend
-levels(dfSdmx$labels)[24] <- "Permanent grassland\nand meadows"
-levels(dfSdmx$labels)[16] <- "Other"
 
+# Re-name some levels for smaller legend
+levels(dfSdmx$labels)[24] <- "Permanent grassland and meadows"
+levels(dfSdmx$labels)[16] <- "Other"
+dfSdmx$labels
 ```
 
 ```{r firstplot,fig.cap="Hallo",fig.width=6,fig.height=6}
-gg <- ggplot(data=dfSdmx, aes(x=GEO,y=PC,fill=labels)  )
-gg <- gg + geom_bar(stat="identity",) 
+gg <- ggplot(data=dfSdmx, aes(x=GEO,y=PC,fill=labels,order=labels)  )
+gg <- gg + geom_bar(stat="identity",width=0.5) 
 gg <- gg + coord_flip() 
 gg <- gg + scale_y_continuous(labels = percent)
 gg <- gg + scale_fill_brewer(type = "qual")
-gg 
+gg
 ```
 
 
@@ -145,7 +169,8 @@ theme_qual <- function(base_size=11, base_family="") {
     )
 }
 
-gg <- gg+ theme_qual()
+gg <- gg +  theme_qual()
+gg <- gg + guides(fill = guide_legend(keywidth = 0.8, keyheight = 0.8,nrow = 2,byrow = TRUE))  
 gg
 ```
 
@@ -155,7 +180,7 @@ gg
 dfSdmx$GEO <-  factor(dfSdmx$GEO, levels = rev(levels(dfSdmx$GEO)))
 
 gg <- gg %+% dfSdmx
-gg <- gg + coord_cartesian()+facet_wrap(facets = "labels",ncol = 1,)
+gg <- gg + coord_cartesian()+facet_wrap(facets = "labels",nrow = 5)
 gg <- gg + scale_fill_brewer(type = "qual",guide=FALSE)
 gg
 ```
