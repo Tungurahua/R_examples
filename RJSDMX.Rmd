@@ -7,13 +7,21 @@ output: rmarkdown::tufte_handout
 ```{r globals, echo=FALSE}
 library("knitr")
 opts_chunk$set(message='FALSE',results='hide')
+
 ```
 
 
 
 
 # Introduction
-Reproducibility 
+R is a programming language specifically designed for statistical computing and graphics. To carry out calculations, analyse data and to produce graphics the user has to write and execute commands. Working with R is much less intuitive than working with spreadsheet software like MS-Excel or OO-Calc where the user is aided by an elaborate graphical user interface. As a result R has a steep learning curve and it takes some effort to get used to it. If the task at hand is the generation of 'simple' bar-charts, line graphs or similar displays, the use of R may therefore seem excessive. However, the programmatic approach followed by R has several advantages:
+\begin{itemize}
+  \item Writing a program  instead of carrying out a series mouse clicks ensures that the work is reproducible. This provides great opportunities for quality control and peer review. 
+  \item Computer code created to generate specific figures can often be adapted to address new questions with rather low effort.
+  \item Nowadays many data providers offer programmatic interfaces to their databases. This allows to 
+\end{itemize}
+
+progra  Reproducibility 
 [^sdmxorg]
 [^rjsdmx_pres]
 
@@ -70,24 +78,26 @@ The following sections
 
 ## Define the REST-Call
 
-```{r getFlows,cache=TRUE,message=TRUE,results='markup'}
+```{r getFlows,message=TRUE,results='hide',tidy=FALSE,echo=1}
 getFlows(provider = "EUROSTAT",pattern = "ef_ov_lusum")
+message("$ef_ov_lusum")
+message('[1] "ESTAT,ef_ov_lusum,1.0 ; Land use: number of')
+message('farms and areas by size of farm (UAA) and LFA status"')
 ```
 
-
-```{r getDimensions,message=TRUE, results='markup'}
-names(getDimensions(provider = "EUROSTAT",dataflow = "ef_ov_lusum"))
+```{r getDimensions,cache=TRUE,message=TRUE, results='markup',tidy=FALSE}
+names(getDimensions(provider = "EUROSTAT",
+                    dataflow = "ef_ov_lusum"))
 ```
 
-```{r getCodes,message=TRUE, results='markup'}
+```{r getCodes,message=TRUE,cache=TRUE, results='markup',tidy=FALSE}
 FREQ_Codes <- getCodes(provider = "EUROSTAT",  
                        flow = "ef_ov_lusum",
                        dimension = "FREQ")
 
 data.frame(codes=names(FREQ_Codes),
-                             labels=unlist(FREQ_Codes),
-                             row.names=NULL)
-
+                             labels = unlist(FREQ_Codes),
+                             row.names = NULL)
 ```
 
 \begin{figure}
@@ -104,7 +114,7 @@ For the time being, you can resort to
 
 
 
-```{r getCodesVARIABLE}
+```{r getCodesVARIABLE,cache=TRUE}
 VARIABLE_Codes <- getCodes(provider = "EUROSTAT",
            flow = "ef_ov_lusum",
            dimension = "VARIABLE")
@@ -121,16 +131,16 @@ row.names=NULL)
 \includegraphics[width=8cm]{resources/Land_use_by_size_of_the_farms,_Slovenia,_2007.PNG}
 \caption{Hierarchical structure of the Size-of-farms statistics at Eurostat. The structure of the dataset does not match the with the one shown in figure \ref{fig:25_eurostat}. }
 \end{figure}
-```{r idString, eval=FALSE}
-id = "ef_ov_lusum.A.TOTAL.D+E+F+G+H.HA.TOTAL.*"
+```{r idString}
+idString = "ef_ov_lusum.A.TOTAL.D+E+F+G+H.HA.TOTAL.*"
 ```
 
 
 
 
-```{r getData,cache=TRUE}
+```{r getData,cache=TRUE,tidy=FALSE}
 listSdmx <- getSDMX(provider = "EUROSTAT",
-                    id = "ef_ov_lusum.A.TOTAL.D+E+F+G+H.HA.TOTAL.*",
+                    id = idString,
                     start = "2007",
                     end="2007")
 
@@ -173,15 +183,14 @@ gg
 
 
 
-```{r windowdressing,fig.width=6,fig.height=6,message=FALSE,warning=FALSE}
+```{r windowdressing,fig.width=6,fig.height=6,message=FALSE,warning=FALSE,tidy=FALSE}
 theme_qual <- function(base_size=11, base_family="") {
   require(grid)
-  theme_bw(base_size=base_size, base_family=base_family) %+replace%
-    theme(
-      axis.title=element_blank(),
+  theme_bw(base_size=base_size, 
+           base_family=base_family) %+replace%
+    theme(axis.title=element_blank(),
       legend.position = "bottom",
-      legend.title=element_blank()
-    )
+      legend.title=element_blank())
 }
 
 gg <- gg +  theme_qual()
