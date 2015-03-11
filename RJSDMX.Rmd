@@ -18,11 +18,13 @@ R is a programming language specifically designed for statistical computing and 
 \begin{itemize}
   \item Writing a program  instead of carrying out a series mouse clicks ensures that the work is reproducible. This provides great opportunities for quality control and peer review. 
   \item Computer code created to generate specific figures can often be adapted to address new questions with rather low effort.
+
   \item Nowadays many data providers offer programmatic interfaces to their databases. This allows to carry out analysis 'from cradle to grave' with a single tool.
 \end{itemize}
 
 In 2001 SDMX[^sdmxorg], an initative to foster standards for the exchange of statistical information has been started. Within this initiative a standard protocol for the exchange of statistical data and metadata has been adopted. 
 progra  Reproducibility 
+
 
 [^rjsdmx_pres]
 
