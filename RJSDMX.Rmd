@@ -2,6 +2,8 @@
 title: "Accessing RSDMX-data from R"
 author: "Albrecht Gradmann"
 date: "March 10th, 2015"
+header-includes:
+   - \usepackage{url}
 output: rmarkdown::tufte_handout
 ---
 ```{r globals, include=FALSE}
@@ -22,31 +24,31 @@ R is a programming language specifically designed for statistical computing and 
   \item Many data providers offer programmatic interfaces to their databases. This allows to carry out analysis 'from cradle to grave' with a single tool.
 \end{itemize}
 
-In 2001 SDMX[^sdmxorg], an initative to foster standards for the exchange of statistical information has been started. Within this initiative a standard protocol for the exchange of statistical data and metadata has been adopted. This standard has been adapted by major institutions such as Eurostat, OECD, Worldbank, IMF and others to provide a common interface for data access and retrieval.
+In 2001 SDMX[^sdmxorg], an initiative to foster standards for the exchange of statistical information has been started. Within this initiative a standard protocol for the exchange of statistical data and metadata has been adopted. This standard has been adapted by major institutions such as Eurostat, OECD, World-bank, IMF and others to provide a common interface for data access and retrieval.
 
-In the present example data in SDMX format will be retrieved from Eurostat to produce a figure. Eurostats databse will be accessed through RJSDMX[^rjsdmx_pres] which is a relatively new R-library that provides a convenient interface to Eurostats REST-interface. The data will then undergo some re-formatting and subsetting which is necessary to display the data  using the ggplot2[^ggplot2] package. ggplot2 is a popular plotting library base on Leland Wilkinsons Grammar of Graphics [^Wilkinson]
+In the present example data in SDMX format will be retrieved from Eurostat to produce a figure. Eurostat database will be accessed through RJSDMX[^rjsdmx_pres] which is a relatively new R-library that provides a convenient interface to the Eurostat REST-interface. The data will then undergo some re-formatting and sub-setting which is necessary to display the data  using the ggplot2[^ggplot2] package. ggplot2 is a popular plotting library base on Leland Wilkinsons Grammar of Graphics [^Wilkinson]
 
-In the example we want to reproduce figure \ref{fig:25_eurostat} about the 'Stucture of utilised agricultural area, 2007(\% of UAA) which has been published by Eurostat in 2010.[^statcc]  The figure shows the share of different farming practices in EU countries. The amount of $CO_2$ emitted from farming is, to some degree, related to the type of farming practices; extensively farmed land tends to accumulate carbon, while intensively farmed areas (cropland) tend to lose carbon. 
+In the example we want to reproduce figure \ref{fig:25_eurostat} about the 'Structure of utilized agricultural area, 2007(\% of UAA) which has been published by Eurostat in 2010.[^statcc]  The figure shows the share of different farming practices in EU countries. The amount of $CO_2$ emitted from farming is, to some degree, related to the type of farming practices; extensively farmed land tends to accumulate carbon, while intensively farmed areas (cropland) tend to lose carbon. 
 
 \begin{figure}
 \label{fig:25_eurostat}
 \includegraphics{resources/fig25_eurostat.PNG}
-\caption{Structure of utilised agricultural area, 2007 (\% of UAA).}
+\caption{Structure of utilized agricultural area, 2007 (\% of UAA).}
 \end{figure}
 
 The present text does not aim to discuss the strengths and weaknesses of the chosen figure to make the intended point, and there has not been any specific rationale in the choice of the specific figure. Instead the text will focus on the technicalities of the integrated workflow from the download of the data to plot creation.
 
 
 <!-- References -->
-[^sdmxorg]:Homepage of the Statistical Data and Metadata eXchange (SDMX)  http://sdmx.org/
-[^rjsdmx_pres]: Mattiocco, A. (2013): Using SDMX data in statistical packages and tools (EXCEL, R, Matlab, SAS). Presentation. http://tinyurl.com/RJSDMX-pres
-[^ggplot2]: Homepage of Hadley Wickhams ggplot2.http://ggplot2.org/
-[^statcc]: See p. 41 in EUROSTAT 2010: Using official statistics to calculate greenhouse gas emissions - A statistical guide. http://tinyurl.com/stat-guide-cc
+[^sdmxorg]:Homepage of the Statistical Data and Metadata eXchange (SDMX)  \url{http://sdmx.org/}
+[^rjsdmx_pres]: Mattiocco, A. (2013): Using SDMX data in statistical packages and tools (EXCEL, R, Matlab, SAS). Presentation. \url{http://tinyurl.com/RJSDMX-pres}
+[^ggplot2]: Homepage of Hadley Wickhams ggplot2. \url{http://ggplot2.org/}
+[^statcc]: See p. 41 in EUROSTAT 2010: Using official statistics to calculate greenhouse gas emissions - A statistical guide. \url{http://tinyurl.com/stat-guide-cc}
 [^Wilkinson]: Wilkinson: The Grammar of Graphics. 
 
 
 # Setting the scene
-In R work is done by issueing a series of commands to a 'command-line'. You will find all the commands necessary to reproduce the final and intermediate results below. You can recreate the results presented here by running these source-code snippets in a R-session. 
+In R work is done by issuing a series of commands to a 'command-line'. You will find all the commands necessary to reproduce the final and intermediate results below. You can recreate the results presented here by running these source-code snippets in a R-session. 
 
 If you want to avoid copy-pasting the snippets from the pdf into a R session, you can also run the example from the source-code of this document which is available at Git-Hub.[^github-sources]  you upon request.
 
@@ -68,14 +70,12 @@ If you receive error messages at this stage, you probably have not yet installed
 Although I tried to design this as a self-contained example it might not work as expected on your system. In that case, please do not hesitate to get in touch directly.
 
 
-[^howto_install]: How to install packages in R http://tinyurl.com/nh7whtp
+[^howto_install]: How to install packages in R \url{http://tinyurl.com/nh7whtp}
 
-[^fss-slov]: Statistics in Focus 87/2007: Farm Structure in Slovenia 2007 http://tinyurl.com/fss-slov
-
-[^github-sources]: Source code used to create this document. If are not using git, you can also download sources as a regular zip archive. https://github.com/Tungurahua/R_examples
+[^github-sources]: Source code used to create this document. If are not using git, you can also download sources as a regular zip archive. \url{https://github.com/Tungurahua/R_examples}
  
 
-## Define the REST-Call and retrieve data
+# Define the REST-Call and retrieve data
 To programmatically access the Eurostat database we first need to assemble a so-called REST-id. This is a textual representation of the data we intend to download. Below is the specific REST-id for the data used to create the figures later in this document.
 
 ```{r idString,eval=FALSE}
@@ -100,9 +100,9 @@ idString = "[DataID].  # insert data-code here
             [AGRAREA]. # All types of territory -> TOTAL
             [GEO]      # Countries *-> select all"
 ```
-To create the specific ID it is necessary to replace the parts in square brackets with your selection where multiple selections are chained with \texttt{+} and a selecion of all available items is abbreviated as \texttt{*}. Manually building the REST call is not an easy task. While Eurostat provides a Rest-builder[^restbuild] tool on their website, it is implemented only for very few datasets. Fortunately the developer of `RSDMX` is currently working on a java tool[^javatool] which will provide a gui for the creation of REST-ids. Chances are good that this tool will be available once this document is finalized, so I will not bother to discuss alternative methods of assembling REST-ids here. However, if you are faced with the task of building a REST-id and the tool is not available yet, please get in touch with me so I can provide you with an alternative work-flow.
+To create the specific ID it is necessary to replace the parts in square brackets with your selection where multiple selections are chained with `+` and a selection of all available items is abbreviated as `*`. Manually building the REST call is not an easy task. While Eurostat provides a Rest-builder[^restbuild] tool on their website, it is implemented only for very few datasets. Fortunately the developer of `RSDMX` is currently working on a java tool which will provide a gui for the creation of REST-ids. Chances are good that this tool will be available once this document is finalized, so I will not bother to discuss alternative methods of assembling REST-ids here.[^javatool] However, if you are faced with the task of building a REST-id and the tool is not available yet, please get in touch with me so I can provide you with an alternative work-flow.
 
-Using this REST-id we can issue the following commands to retrieve the data from Eurostat. The actual work is done by the \texttt{getSdmx()} function which will return an object of type \texttt{list}. For the subsequent steps we need to transform the list into a \texttt{dat.frame}.
+Using this REST-id we can issue the following commands to retrieve the data from Eurostat. The actual work is done by the `getSdmx()` function which will return an object of type `list`. For the subsequent steps we need to transform the list into a `data.frame`.
 
 
 ```{r getData,cache=TRUE,tidy=FALSE}
@@ -118,25 +118,45 @@ listSdmx <- getSDMX(provider = "EUROSTAT",
 # Re-format into a dataframe
 dfSdmx <- sdmxdf(listSdmx, meta = T)
 ```
+We can look at the first few lines of the retrieved using the `head()` function. You will note that the downloaded dataset does contain only the variable codes. The full name of a variable (e.g. Austria for AT) is stored in separate tables for reasons of data size and consistency.
 
-On close inspection you will note that the 
-[^fss-slov]
+```{r headsdmx,results='markup',echo=-3}
+# Display the first 6 lines of dfSdmx, suppressing
+# columns 1 and 4
+options(width = 286)
+head(dfSdmx[-c(1,4)])
+```
+Since we do not want to label the graph with these codes, we also need to download the dictionary for `VARIABLE`. Again, we will inspect the first lines of this dictionary.
+
+```{r getCodesVARIABLE,cache=TRUE,tidy=FALSE,echo=-1}
+options(width = 83)
+# get dictionary for VARIABLE
+VARIABLE_Codes <- getCodes(provider = "EUROSTAT",
+           flow = "ef_ov_lusum",
+           dimension = "VARIABLE")
+
+# convert it into a dataframe
+VARIABLE_Codes <- data.frame(VARIABLE=names(VARIABLE_Codes),
+                             labels=unlist(VARIABLE_Codes),
+                             row.names=NULL)
+
+```
+```{r headVARdic,results='markup'}
+# Display the first 6 lines of VARIABLE_Codes
+head(VARIABLE_Codes)
+```
+
+If you have reproduced the data on your computer, you might notice that the REST-id above contains different codes for farming practices than in the original figure. The reason is that the classes selected in the original figure do not add up to 100\% of the utilizes agricultural area (UAA). Figure \ref{fig:catclass} which is taken from a Euro stat publication [^fss-slov] shows that the sub-categories of the total area of agricultural holdings is made up of (H) Other area, (D) Arable Land, (E) Kitchen Garden, (F) Permanent Pasture and Meadows and (G) Permanent Crops. The category 'Forage' used in the original figure is a sub-category of Arable Land. 
+
+
 \begin{figure}
-\centering
+\label{fig:catclass}
+%\centering
 \includegraphics[width=8cm]{resources/Land_use_by_size_of_the_farms,_Slovenia,_2007.PNG}
 \caption{Hierarchical structure of the Size-of-farms statistics at Eurostat. The structure of the dataset does not match the with the one shown in figure \ref{fig:25_eurostat}. }
 \end{figure}
 
 
-```{r getCodesVARIABLE,cache=TRUE}
-VARIABLE_Codes <- getCodes(provider = "EUROSTAT",
-           flow = "ef_ov_lusum",
-           dimension = "VARIABLE")
-
-VARIABLE_Codes <- data.frame(VARIABLE=names(VARIABLE_Codes),
-                             labels=unlist(VARIABLE_Codes),
-                             row.names=NULL)
-```
 
 
 <!-- References used in this section --> 
@@ -146,13 +166,23 @@ VARIABLE_Codes <- data.frame(VARIABLE=names(VARIABLE_Codes),
 
 # Re-organizing the dataset
 
+Before plotting the data we need to take some additional steps to re-organize the data:
+\begin{itemize}
+  \item merge the the main dataset \texttt{dfSdmx} with the variable dictionary `VARIABLE\_codes` doing an inner join
+  \item select the variables we need to create the plot (`GEO`, `VARIABLE`, `labels` and `OBS`)
+  \item drop all rows related to Switzerland (CH)
+  \item for France use data for France metropolitain (FX) which excludes overseas territories
+  \item calculate an additional variable `PC` that contains the percentages of land use classes per country
+\end{itemize}
+
+The package `dplyr`[^dplyr] provides a convenient syntax for carrying out these steps. Some of the label names will be changed to minimize the space taken up by the legend of the plot.
 
 ```{r dplyr, warning=FALSE,message=FALSE,tidy=FALSE}
+# use dplyr for the following lines
 dfSdmx <- 
   dfSdmx %>%
   inner_join(VARIABLE_Codes)%>%
   select(GEO, VARIABLE,labels, OBS) %>%
-#  arrange(GEO) %>%
   filter(!GEO %in% c("CH","FX")) %>%
   group_by(GEO) %>%
   mutate(PC=OBS/sum(OBS))
@@ -162,22 +192,30 @@ dfSdmx$GEO <-  factor(dfSdmx$GEO, levels = rev(levels(dfSdmx$GEO)))
 
 # Re-name some VARIABLE levels for smaller legend
 levels(dfSdmx$labels)[24] <- "Permanent grassland and meadows"
-levels(dfSdmx$labels)[16] <- "Other"
+levels(dfSdmx$labels)[16] <- "Other (incl. forests)"
+levels(dfSdmx$GEO)[17] <- "FR"
 ```
+[^dplyr]: An introduction to dplyr \newline http://cran.rstudio.com/web/packages/dplyr/vignettes/introduction.html
 
 # Create an initial plot
 
-```{r firstplot,fig.cap="Hallo",fig.width=6,fig.height=6,warning=FALSE}
+An initial version of the plot can be created with the following three lines of code. The `ggplot` package takes several default settings which are very not suitable for the present layout and we will change them in the next sections. However, two things are worth pointing out here:
+\begin{itemize}
+  \item R does not display any data for Netherlands. This is because for this country there was no data available for 'Kitchen gardens' since percentages can only be calculated for a total no data can be reported.
+  \item Countries are listed in alphabetical order instead of 'protocol order'. 
+\end{itemize}
+
+```{r firstplot,fig.cap="An initial version of the plot.",fig.width=5,fig.height=5,warning=FALSE,tidy=FALSE}
 gg <- ggplot(data=dfSdmx, aes(x=GEO,y=PC,fill=labels,order=labels)  )
 gg <- gg + geom_bar(stat="identity",width=0.5) 
 gg <- gg + coord_flip() 
 gg
 ```
-\newpage
 
 # Refine appearance
+Here we ma
 
-```{r windowdressing,fig.width=6,fig.height=6,message=FALSE,warning=FALSE,tidy=FALSE}
+```{r windowdressing,fig.cap="A second version of the plot with changes made to several theme variables.",fig.width=6,fig.height=6,message=FALSE,warning=FALSE,tidy=FALSE}
 theme_qual <- function(base_size=11, base_family="") {
   require(grid)
   theme_bw(base_size=base_size, 
@@ -196,9 +234,10 @@ gg <- gg + guides(fill = guide_legend(keywidth = 0.8,
                                       byrow = TRUE))  
 gg
 ```
-\newpage
 
 # An alternative Plot
+
+An alternative version of the plot is given below. Using a technique called 'faceting', the different variable levels are allotted to different sub-panels of the graphic. This allows direct comparison for each category.
 
 ```{r betterplot,fig.width=6,fig.height=6,warning=FALSE,message=FALSE}
 dfSdmx$GEO <-  factor(dfSdmx$GEO, levels = rev(levels(dfSdmx$GEO)))
