@@ -61,12 +61,12 @@ xtable(head(tsDf[c(2,3,5:8)]), caption = "First rows of tsDf")
 If you ever bowsed for data on the Eurostat website, you will probably recognize some of the variables:
 
 \begin{itemize}
-  \item TIME designates the year of the observation.
-  \item OBS is the actual numeric observaion value.
-  \item FREQ tells us the observation frequency. Our data is annual (A) based on the data retrieval call.
-  \item UNIT  hast been set to percentage (PC) in the data retrieval call.
-  \item SEX is the total (T) for both sexes. \marginnote{Possible values for SEX are \underline{M}ale, \underline{F}emale and \underline{T}otal (not transgender as you might think).}
-  \item GEO lists the geographic entities at NUTS-2 level.
+  \item \texttt{TIME} designates the year of the observation.
+  \item \texttt{OBS} is the actual numeric observaion value.
+  \item \texttt{FREQ} tells us the observation frequency. Our data is annual (A) based on the data retrieval call.
+  \item \texttt{UNIT}  hast been set to percentage (PC) in the data retrieval call.
+  \item \texttt{SEX} is the total (T) for both sexes. \marginnote{Possible values for \texttt{SEX} are \underline{M}ale, \underline{F}emale and \underline{T}otal (not transgender as you might think).}
+  \item \texttt{GEO} lists the geographic entities at NUTS-2 level.
 \end{itemize}
 
 Further inspection of the dataset reveals that figures for Turkey are included in the dataset. We use the following command to filter out all rows that start with TR. While in this case a relatively simple search string can be used, you should know that R is fully capable of interpreting regular expressions (REGEX)  allowing the definition of more sophisticated filter criteria. [^regex] the A last step we need to take for the 
@@ -81,16 +81,15 @@ Now as we have gathered and prepared the unemployment data from Eurostat, our ne
 
 # Getting the empty maps
 For the creation of choroplete maps we need information about the geographical extent of the NUTS-2 regions. This information is provided from Eurostat in the form of ESRI-shapefiles [^Eurostat_maps]. The appropriate shapefiles will be downloaded programmatically. As they are provided as zip-files we need to unpack them for further processing.
-
 ```{r download_shp,message=FALSE,tidy=F,cache=TRUE}
 # Get the shapefile from Eurostat
 download.file(paste0("http://ec.europa.eu/eurostat/cache/",
                      "GISCO/geodatafiles/NUTS_2010_60M_SH.zip"),
-              destfile = "/NUTS_2010_60M_SH.zip")
+              destfile = "shp/NUTS_2010_60M_SH.zip")
 
 # Unzip the data in a temporary location
-unzip("/NUTS_2010_60M_SH.zip",
-      exdir="NUTS_2010_60M_SH")
+unzip("shp/NUTS_2010_60M_SH.zip",
+      exdir="shp/NUTS_2010_60M_SH")
 
 ```
 
@@ -99,7 +98,7 @@ Once the archive has been extracted, we can create the information into a `Spati
 ```{r Read_shp,message=FALSE,tidy=F,cache=TRUE,warning=FALSE,results='hide'}
 # Read administrative boundaries 
 # and set appropriate Transformation
-eurMap <- readOGR(paste0("NUTS_2010_60M_SH/NUTS_2010_60M_SH/",
+eurMap <- readOGR(paste0("shp/NUTS_2010_60M_SH/NUTS_2010_60M_SH/",
                          "NUTS_2010_60M_SH/data"),
                   "NUTS_RG_60M_2010")
 
@@ -276,8 +275,44 @@ map <- map + theme(
 # The Result
 Below you will find the so-far final version of the plot. There are still several imperfections like a missing scale and a text box with source references.  Especially troublesome is the eye-catching hole in the adriatic coast. While this could be due to rapid sink of the Kars Mountains followed by horrendous floods it is more likely an issue with the shape file addressing EU countries only.[^balkans] However all these issues are solvable and given that this is a tutorial and not the preparation of publication-ready graphics I will refrain from dealing with them here. 
 
+
+```{r lastTouch, include=FALSE,cache=TRUE}
+# Get the shapefile and unzip it
+#download.file("http://thematicmapping.org/downloads/TM_WORLD_BORDERS-0.3.zip", destfile = "shp/TM_WORLD_BORDERS-0.3.zip")
+#unzip("shp/TM_WORLD_BORDERS-0.3.zip", exdir="shp/TM_WORLD_BORDERS-0.3")
+
+TM_WORLD_BORDERS3 <- readOGR("shp/TM_WORLD_BORDERS-0.3/",
+                  "TM_WORLD_BORDERS-0.3")
+TM_WORLD_BORDERS3  <- spTransform(TM_WORLD_BORDERS3 , 
+                      CRS("+proj=longlat +datum=WGS84")) 
+TMdf <- fortify(TM_WORLD_BORDERS3,region = "ISO2")
+
+## Wir brauchen Bosnien BA, Serbien RS, Makedonien ME, Albanine AL und Türkei 
+
+TMdf <- subset(TMdf, 
+                  long > min(europe.limits$lon) &
+                    long < max(europe.limits$lon) & 
+                    lat > min(europe.limits$lat) & 
+                    lat < max(europe.limits$lat))
+
+TMdf2 <- TMdf[which(TMdf$id %in% c("BA","RS","ME","AL","TR")),]
+
+map <- map + geom_polygon(data = TMdf2,aes(x=long, 
+                                          y=lat, 
+                                          group=group),fill="gray95")
+map <- map + geom_path(data=TMdf2, color='black', size=0.01)
+```
+
+
+
+
+
+
+
 ```{r, fig.cap = "EU 2013 Unemployment rates by NUTS2 regions, percentage of total population, both sexes Source: Eurostat (tgs00010)",echo=FALSE}
 map 
+
+
 ```
 
 
