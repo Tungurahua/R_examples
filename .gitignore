@@ -7,3 +7,4 @@ NUTS_2010_60M_SH
 # Output file formats
 *.pdf
 
+shp/*
