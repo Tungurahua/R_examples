@@ -100,7 +100,7 @@ idString = "[DataID].  # insert data-code here
             [AGRAREA]. # All types of territory -> TOTAL
             [GEO]      # Countries *-> select all"
 ```
-To create the specific ID it is necessary to replace the parts in square brackets with your selection where multiple selections are chained with `+` and a selection of all available items is abbreviated as `*`. Manually building the REST call is not an easy task. While Eurostat provides a Rest-builder[^restbuild] tool on their website, it is implemented only for very few datasets. Fortunately the developer of `RSDMX` is currently working on a java tool which will provide a gui for the creation of REST-ids. Chances are good that this tool will be available once this document is finalized, so I will not bother to discuss alternative methods of assembling REST-ids here.[^javatool] However, if you are faced with the task of building a REST-id and the tool is not available yet, please get in touch with me so I can provide you with an alternative work-flow.
+To create the specific ID it is necessary to replace the parts in square brackets with your selection where multiple selections are chained with `+` and a selection of all available items is abbreviated as` *`. Manually building the REST call is not an easy task. While Eurostat provides a Rest-builder[^restbuild] tool on their website, it is implemented only for very few datasets. Fortunately the developer of `RSDMX` is currently working on a java tool which will provide a gui for the creation of REST-ids. Chances are good that this tool will be available once this document is finalized, so I will not bother to discuss alternative methods of assembling REST-ids here.[^javatool] However, if you are faced with the task of building a REST-id and the tool is not available yet, please get in touch with me so I can provide you with an alternative work-flow.
 
 Using this REST-id we can issue the following commands to retrieve the data from Eurostat. The actual work is done by the `getSdmx()` function which will return an object of type `list`. For the subsequent steps we need to transform the list into a `data.frame`.
 
@@ -168,14 +168,14 @@ If you have reproduced the data on your computer, you might notice that the REST
 
 Before plotting the data we need to take some additional steps to re-organize the data:
 \begin{itemize}
-  \item merge the the main dataset \texttt{dfSdmx} with the variable dictionary `VARIABLE\_codes` doing an inner join
-  \item select the variables we need to create the plot (`GEO`, `VARIABLE`, `labels` and `OBS`)
-  \item drop all rows related to Switzerland (CH)
-  \item for France use data for France metropolitain (FX) which excludes overseas territories
-  \item calculate an additional variable `PC` that contains the percentages of land use classes per country
+  \item merge the the main dataset \texttt{dfSdmx} with the variable dictionary \texttt{VARIABLE\_codes} doing an inner join
+  \item select the variables we need to create the plot (\texttt{GEO}, \texttt{VARIABLE}, \texttt{labels} and \texttt{OBS})
+  \item drop all rows related to Switzerland (\texttt{CH})
+  \item for France use data for France metropolitain (\texttt{FX}) which excludes overseas territories
+  \item calculate an additional variable \texttt{P} that contains the percentages of land use classes per country
 \end{itemize}
 
-The package `dplyr`[^dplyr] provides a convenient syntax for carrying out these steps. Some of the label names will be changed to minimize the space taken up by the legend of the plot.
+The package `dplyr` provides a convenient syntax for carrying out these steps.[^dplyr] Some of the label names will be changed to minimize the space taken up by the legend of the plot.
 
 ```{r dplyr, warning=FALSE,message=FALSE,tidy=FALSE}
 # use dplyr for the following lines
@@ -199,23 +199,25 @@ levels(dfSdmx$GEO)[17] <- "FR"
 
 # Create an initial plot
 
-An initial version of the plot can be created with the following three lines of code. The `ggplot` package takes several default settings which are very not suitable for the present layout and we will change them in the next sections. However, two things are worth pointing out here:
+An initial version of the plot can be created with the following lines of code. The `ggplot` package takes several default settings which are very not suitable for the present layout and we will change them in the next sections. However, two things are worth pointing out here:
 \begin{itemize}
   \item R does not display any data for Netherlands. This is because for this country there was no data available for 'Kitchen gardens' since percentages can only be calculated for a total no data can be reported.
   \item Countries are listed in alphabetical order instead of 'protocol order'. 
 \end{itemize}
 
-```{r firstplot,fig.cap="An initial version of the plot.",fig.width=5,fig.height=5,warning=FALSE,tidy=FALSE}
+```{r firstplot,fig.cap="An initial version of the plot.",fig.width=5,fig.height=5,warning=FALSE,tidy=FALSE,fig.margin=T}
 gg <- ggplot(data=dfSdmx, aes(x=GEO,y=PC,fill=labels,order=labels)  )
 gg <- gg + geom_bar(stat="identity",width=0.5) 
 gg <- gg + coord_flip() 
+gg <- gg + theme(legend.position="bottom") 
 gg
 ```
+\clearpage
 
 # Refine appearance
 Here we ma
 
-```{r windowdressing,fig.cap="A second version of the plot with changes made to several theme variables.",fig.width=6,fig.height=6,message=FALSE,warning=FALSE,tidy=FALSE}
+```{r windowdressing,fig.cap="A second version of the plot with changes made to several theme variables.",fig.width=5,fig.height=5,message=FALSE,warning=FALSE,tidy=FALSE,}
 theme_qual <- function(base_size=11, base_family="") {
   require(grid)
   theme_bw(base_size=base_size, 
@@ -234,12 +236,13 @@ gg <- gg + guides(fill = guide_legend(keywidth = 0.8,
                                       byrow = TRUE))  
 gg
 ```
+\clearpage
 
 # An alternative Plot
 
 An alternative version of the plot is given below. Using a technique called 'faceting', the different variable levels are allotted to different sub-panels of the graphic. This allows direct comparison for each category.
 
-```{r betterplot,fig.width=6,fig.height=6,warning=FALSE,message=FALSE}
+```{r betterplot,fig.cap="Using sub-panels to plot individual variables",fig.width=6,fig.height=6,warning=FALSE,message=FALSE}
 dfSdmx$GEO <-  factor(dfSdmx$GEO, levels = rev(levels(dfSdmx$GEO)))
 
 gg <- gg %+% dfSdmx
