@@ -6,14 +6,14 @@ output: rmarkdown::tufte_handout
 ---
 
 # Introduction
-This document shows how to create a choroplete map from Eurostat Data using R. For this example I aimed to automate the entire process from downloading the data to the creation of the figure. The idea is to present an entirely reproducible process. The text shows the overall process from a birds-eye perspective. In particular it is not intended to serve as a general introdution to R[^quickR] or a discussion of the Pros and cons of using choropletes to display data. 
+This document shows how to create a choroplete map from Eurostat Data using R. For this example I aimed to automate the entire process from downloading the data to the creation of the figure. The idea is to present an entirely reproducible process. The text shows the overall process from a birds-eye perspective. In particular it is not intended to serve as a general introduction to R[^quickR] or a discussion of the Pros and cons of using choropletes to display data. 
 
-This tutorial shows the process of creating plot in R that visualizes the EU 2013 unemployment rates in the EU as percentage of total population. The final graphic will be a so-called choroplete map. This is a map where geographical regions are coloured by some kind of metric. For this kind of figure to work well the individual regions should be roughly about the same size. For a more in-depth discussion you may refer to Leland Wilkinsons Grammar of Graphics [^Wilkinson] which we have available at Ecologic. The theoretical foundations presented in this book lay the foundations for the `ggplot2`package by Hadley Wickham [^Wickham], the approach used in this document 
+This tutorial shows the process of creating plot in R that visualizes the EU 2013 unemployment rates in the EU as percentage of total population. The final graphic will be a so-called choroplete map. This is a map where geographical regions are colored by some kind of metric. For this kind of figure to work well the individual regions should be roughly about the same size. For a more in-depth discussion you may refer to Leland Wilkinsons Grammar of Graphics [^Wilkinson] which we have available at Ecologic. The theoretical foundations presented in this book lay the foundations for the `ggplot2`package by Hadley Wickham [^Wickham], the approach used in this document 
 
 I plan to create other handouts in the future. Please let me know if you would like to request a specific topic.
 
 # Setting the scene
-This tutorial gives a brief walk-throug of the steps needed to create a choroplete map of EU 2013 unemployment rates by  NUTS-2 regions as a percentage of total population. Unemployment data as well as the geospatial data will be taken from Eurostat. Apart from unemployment data Eurostat provides several datasets on NUTS2 or even NUTS3 level. Adapting the present example to other datasets requires only minor modifications.
+This tutorial gives a brief walk-through of the steps needed to create a choroplete map of EU 2013 unemployment rates by  NUTS-2 regions as a percentage of total population. Unemployment data as well as the geospatial data will be taken from Eurostat. Apart from unemployment data Eurostat provides several datasets on NUTS2 or even NUTS3 level. Adapting the present example to other datasets requires only minor modifications.
 
 The example relies on a series of libraries which have to be installed on your system. Package installation in R is a simple and standard task and it can be done in several ways. For more information, you can either type  `help("install.packages")` in the R Console or look for one of the numerous tutorials on the internet[^howto_install]. Below is the series of commands you need to run first to attach the packages to your R session.
 
@@ -58,11 +58,11 @@ options(xtable.booktabs = TRUE)
 xtable(head(tsDf[c(2,3,5:8)]), caption = "First rows of tsDf")
 ```
 
-If you ever bowsed for data on the Eurostat website, you will probably recognize some of the variables:
+If you ever browsed for data on the Eurostat website, you will probably recognize some of the variables:
 
 \begin{itemize}
   \item \texttt{TIME} designates the year of the observation.
-  \item \texttt{OBS} is the actual numeric observaion value.
+  \item \texttt{OBS} is the actual numeric observation value.
   \item \texttt{FREQ} tells us the observation frequency. Our data is annual (A) based on the data retrieval call.
   \item \texttt{UNIT}  hast been set to percentage (PC) in the data retrieval call.
   \item \texttt{SEX} is the total (T) for both sexes. \marginnote{Possible values for \texttt{SEX} are \underline{M}ale, \underline{F}emale and \underline{T}otal (not transgender as you might think).}
@@ -93,7 +93,7 @@ unzip("shp/NUTS_2010_60M_SH.zip",
 
 ```
 
-Once the archive has been extracted, we can create the information into a `SpatialPolygonsDataframe` which is basically a processed shapefile ready for further treatment in R. We also set the map projection to WGS84. While a discussion of projections  [^projections]  is fay beyond the scope of this paper it is important to understand that this is a crucial step in any mapwork, especially if you aim to merge spatial data from different sources. Not knowing the projection of the data will then most likely lead to desaster.
+Once the archive has been extracted, we can create the information into a `SpatialPolygonsDataframe` which is basically a processed shapefile ready for further treatment in R. We also set the map projection to WGS84. While a discussion of projections  [^projections]  is fay beyond the scope of this paper it is important to understand that this is a crucial step in any mapwork, especially if you aim to merge spatial data from different sources. Not knowing the projection of the data will then most likely lead to disaster.
 
 ```{r Read_shp,message=FALSE,tidy=F,cache=TRUE,warning=FALSE,results='hide'}
 # Read administrative boundaries 
@@ -107,7 +107,7 @@ eurMap <- spTransform(eurMap,
                       CRS("+proj=longlat +datum=WGS84")) 
 ```
 
-As a last step we need to convert the `SpatialPolygonsDataframe` into a regular `dataframe`. This requirement comes from our usage of the `ggplot` package for doing the acutal plotting routine, which expects `dataframes` as inputs.
+As a last step we need to convert the `SpatialPolygonsDataframe` into a regular `dataframe`. This requirement comes from our usage of the `ggplot` package for doing the actual plotting routine, which expects `dataframes` as inputs.
 
 ```{r convert_shp,message=FALSE,tidy=F,warning=FALSE,results='hide'}
 # Convert into a dataframe suitable for plotting
@@ -167,7 +167,7 @@ map <- map + geom_polygon(aes(fill=OBS))
 map
 ```
 
-Although this first draft is  far from perfect it is already suitable to check if the graphic makes sense and actually reveals any interesting information. An initial inspeciont reveals that unemployment rates are highest in southern Spain and Greece. If this is a point we would like to make, we can further tune the graphic. While this is an initial version still, it can make sense to include it as a placeholder in a report draft. R can output the graphics in many different file formats [^graphicDev] that play well with different text editing and layout software. In Word you can link the figure data file so that it updates once a new version has been created in R.[^figLnk] 
+Although this first draft is  far from perfect it is already suitable to check if the graphic makes sense and actually reveals any interesting information. An initial inspection reveals that unemployment rates are highest in southern Spain and Greece. If this is a point we would like to make, we can further tune the graphic. While this is an initial version still, it can make sense to include it as a placeholder in a report draft. R can output the graphics in many different file formats [^graphicDev] that play well with different text editing and layout software. In Word you can link the figure data file so that it updates once a new version has been created in R.[^figLnk] 
 
 
 ## Putting Europe into focus
@@ -194,7 +194,7 @@ If DOM or similar regions are of specific interest, they could be added as inset
 
 
 ## Bin data into classes
-R treats the unemployment figures as a continuous variable. To get a better feeling of the actual level of unemployment in the respective regions we can group the regions into different classes. This process is calles \emph{binning} and is essentially a transformation into a discrete variable.
+R treats the unemployment figures as a continuous variable. To get a better feeling of the actual level of unemployment in the respective regions we can group the regions into different classes. This process is called \emph{binning} and is essentially a transformation into a discrete variable.
 ```{r bin_data,message=FALSE,tidy=F,fig.margin = TRUE}
 map <- ggplot(data=tsMapDf,
               aes(x=long, 
@@ -202,6 +202,7 @@ map <- ggplot(data=tsMapDf,
                   group=group)) 
 map <- map + geom_polygon(aes(fill=cut(OBS, 
                                        breaks=c(0,10,20,30,100)))) 
+map <- map + theme(legend.title=element_blank())
 map
 ```
 If we re-plot the map with binned data we get an awkward looking result; especially when printed in the margin. By default the software assigns automatic values for the legend labels resulting in a crushed plot. 
@@ -224,7 +225,7 @@ map
 ```
 Re-coloring the classified data we can identify areas of high unemployment as red areas which actually makes sense as these are the areas that need attention.
 
-The labelling text of the legend has also been adapted in this step. 
+The labeling text of the legend has also been adapted in this step. 
 
 ## Add country borders
 Here we add the borders of regions an countries in different colors.
@@ -233,17 +234,17 @@ Here we add the borders of regions an countries in different colors.
 #map <- map + geom_path(color="white",size=0.01)
 map
 
-# Borders on NUTS1 level in black
+# Borders on NUTS0 level in black
 rindex <- grep(eurMapDf$id,pattern=c("^[[:alpha:]]{2}$"))
-eurMapDf_NUTS1 <- eurMapDf[rindex,]
+eurMapDf_NUTS0 <- eurMapDf[rindex,]
 
-eurMapDf_NUTS1 <- subset(eurMapDf_NUTS1, 
+eurMapDf_NUTS0 <- subset(eurMapDf_NUTS0, 
                        long > min(europe.limits$lon) &
                          long < max(europe.limits$lon) & 
                          lat > min(europe.limits$lat) & 
                          lat < max(europe.limits$lat))
 
-map <- map + geom_path(data=eurMapDf_NUTS1, color='black', size=0.01)
+map <- map + geom_path(data=eurMapDf_NUTS0, color='black', size=0.01)
 map
 ```
 
@@ -273,7 +274,7 @@ map <- map + theme(
 ```
 
 # The Result
-Below you will find the so-far final version of the plot. There are still several imperfections like a missing scale and a text box with source references.  Especially troublesome is the eye-catching hole in the adriatic coast. While this could be due to rapid sink of the Kars Mountains followed by horrendous floods it is more likely an issue with the shape file addressing EU countries only.[^balkans] However all these issues are solvable and given that this is a tutorial and not the preparation of publication-ready graphics I will refrain from dealing with them here. 
+Below you will find the so-far final version of the plot. There are still several imperfections like a missing scale and a text box with source references.  Especially troublesome is the eye-catching hole in the Adriatic coast. While this could be due to rapid sink of the Kars Mountains followed by horrendous floods it is more likely an issue with the shape file addressing EU countries only.[^balkans] However all these issues are solvable and given that this is a tutorial and not the preparation of publication-ready graphics I will refrain from dealing with them here. 
 
 
 ```{r lastTouch, include=FALSE,cache=TRUE}
@@ -321,16 +322,16 @@ map
 One of the great advantages of R over other similar software packages is a very active and helpful user community. This document has been prepared by drawing on the following sources:
 
 
-A cheatsheet for working with maps and ggplot [^ggmap_cheat]. This is a great concise resource that discusses how to include maps from google, open street maps or stamen.
+A cheatsheet for working with maps and ggplot [^ggmap_cheat]. This is a great concise resource that discusses how to include maps from Google, open street maps or stamen.
 
 Stackoverflow[^SO] is a question and answer site for professional and enthusiast programmers. It's built and run by you as part of the Stack Exchange network of Q&A sites. Given that you post a well-defined question you will most likely get help here within hours.
 
-A post on Max Marchis Blog[^MMarchi] was the source of the initial draft of this document. However this is just one of many. Searcing for maps, R, choropletes and Eurostat will certainly reveal numerous other sources.
+A post on Max Marchis Blog[^MMarchi] was the source of the initial draft of this document. However this is just one of many. Searching for maps, R, choropletes and Eurostat will certainly reveal numerous other sources.
 
 The `ggplot2`[^ggdoc] package has a great online documentation with many practical examples.
 
 
-Last but not least this document has been created to get used to the Tufte-\LaTeX\ [^tufte_latex] document classes which define a style similar to the style Edward Tufte uses in his books and handouts. Tufte’s style is known for its extensive use of sidenotes, tight integration of graphics with text, and well-set typography. That said, if you neet ot print it, use color as it will be hard to read otherwise.
+Last but not least this document has been created to get used to the Tufte-\LaTeX\ [^tufte_latex] document classes which define a style similar to the style Edward Tufte uses in his books and handouts. Tufte’s style is known for its extensive use of sidenotes, tight integration of graphics with text, and well-set typography. That said, if you need to print it, use color as it will be hard to read otherwise.
 
 
 <!-- References --> 
