@@ -6,8 +6,8 @@ output: rmarkdown::tufte_handout
 ---
 
 ```{r setup,include=FALSE}
-  library(knitr)
-  opts_knit$set(root.dir=normalizePath('../'))
+library(knitr)
+opts_knit$set(root.dir=normalizePath('../'))
 ```
 
 
@@ -91,11 +91,11 @@ For the creation of choroplete maps we need information about the geographical e
 # Get the shapefile from Eurostat
 download.file(paste0("http://ec.europa.eu/eurostat/cache/",
                      "GISCO/geodatafiles/NUTS_2010_60M_SH.zip"),
-              destfile = "shp/NUTS_2010_60M_SH.zip")
+              destfile = "data/NUTS_2010_60M_SH.zip")
 
 # Unzip the data in a temporary location
-unzip("shp/NUTS_2010_60M_SH.zip",
-      exdir="shp/NUTS_2010_60M_SH")
+unzip("data/NUTS_2010_60M_SH.zip",
+      exdir="data/NUTS_2010_60M_SH")
 
 ```
 
@@ -104,7 +104,7 @@ Once the archive has been extracted, we can create the information into a `Spati
 ```{r Read_shp,message=FALSE,tidy=F,cache=TRUE,warning=FALSE,results='hide'}
 # Read administrative boundaries 
 # and set appropriate Transformation
-eurMap <- readOGR(paste0("shp/NUTS_2010_60M_SH/NUTS_2010_60M_SH/",
+eurMap <- readOGR(paste0("data/NUTS_2010_60M_SH/NUTS_2010_60M_SH/",
                          "NUTS_2010_60M_SH/data"),
                   "NUTS_RG_60M_2010")
 

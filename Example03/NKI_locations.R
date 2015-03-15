@@ -9,8 +9,8 @@ kommunen <- read.csv("resources/kommunen.csv",encoding="UTF8")
 
 
 # Get administrative boundaries for Germany
-gadm1 <- getData('GADM', country='DEU', level=1)
-gadm3 <- getData('GADM', country='DEU', level=3)
+gadm1 <- getData('GADM', country='DEU', level=1,path = "data/")
+gadm3 <- getData('GADM', country='DEU', level=3,path = "data/")
 # Subset to those named in "kommunen" for which Antwort=TRUE
 gadm3 <- subset(gadm3, NAME_3 %in% kommunen[which(kommunen$Antwort=="TRUE"),]$gadm3)
 

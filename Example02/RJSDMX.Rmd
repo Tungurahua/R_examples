@@ -9,7 +9,7 @@ output: rmarkdown::tufte_handout
 ```{r globals, include=FALSE}
 library("knitr")
 opts_chunk$set(message='FALSE',results='hide')
-
+opts_knit$set(root.dir=normalizePath('../'))
 ```
 
 
@@ -32,7 +32,7 @@ In the example we want to reproduce figure \ref{fig:25_eurostat} about the 'Stru
 
 \begin{figure}
 \label{fig:25_eurostat}
-\includegraphics{resources/fig25_eurostat.PNG}
+\includegraphics{../resources/fig25_eurostat.PNG}
 \caption{Structure of utilized agricultural area, 2007 (\% of UAA).}
 \end{figure}
 
@@ -85,7 +85,7 @@ While this is rather cryptic at first sight, you should note that the id starts 
 
 \begin{figure}
 \label{fig:Data_browser}
-\includegraphics{resources/Eurostat_REST.PNG}
+\includegraphics{../resources/Eurostat_REST.PNG}
 \caption{The Eurostat Data Explorer is organized around the concepts of 'dataflow', 'Dimensions' and 'Codes'. Unfortunately it is not possible to extract the REST-id string from this application.}
 \end{figure}
 
@@ -152,7 +152,7 @@ If you have reproduced the data on your computer, you might notice that the REST
 \begin{figure}
 \label{fig:catclass}
 %\centering
-\includegraphics[width=8cm]{resources/Land_use_by_size_of_the_farms,_Slovenia,_2007.PNG}
+\includegraphics[width=8cm]{../resources/Land_use_by_size_of_the_farms,_Slovenia,_2007.PNG}
 \caption{Hierarchical structure of the Size-of-farms statistics at Eurostat. The structure of the dataset does not match the with the one shown in figure \ref{fig:25_eurostat}. }
 \end{figure}
 
