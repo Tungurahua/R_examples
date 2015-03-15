@@ -5,7 +5,7 @@ library(raster)
 library(ggmap)
 
 # Read the *.csv with the names
-kommunen <- read.csv("kommunen.csv",encoding="UTF8")
+kommunen <- read.csv("resources/kommunen.csv",encoding="UTF8")
 
 
 # Get administrative boundaries for Germany
