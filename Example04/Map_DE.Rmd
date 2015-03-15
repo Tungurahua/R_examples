@@ -69,7 +69,7 @@ blnames[blnames$label=="Hamburg","label"] <- "HH"
 blnames[blnames$label=="Bremen","label"] <- "HB"
 ```
 
-```{r , figga, fig.width = 6, fig.height = 9, dev='tikz',fig.cap = "Full width figure",message=FALSE}
+```{r , figga, fig.width = 6, fig.height = 9,fig.cap = "Full width figure",message=FALSE}
 
 # make the map
 gg <- ggplot()
