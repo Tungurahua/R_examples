@@ -212,12 +212,11 @@ gg <- gg + coord_flip()
 gg <- gg + theme(legend.position="bottom") 
 gg
 ```
-\clearpage
 
 # Refine appearance
 Here we ma
 
-```{r windowdressing,fig.cap="A second version of the plot with changes made to several theme variables.",fig.width=5,fig.height=5,message=FALSE,warning=FALSE,tidy=FALSE,}
+```{r theme,message=FALSE,warning=FALSE,tidy=FALSE,}
 theme_qual <- function(base_size=11, base_family="") {
   require(grid)
   theme_bw(base_size=base_size, 
@@ -226,8 +225,10 @@ theme_qual <- function(base_size=11, base_family="") {
       legend.position = "bottom",
       legend.title=element_blank())
 }
+``` 
 
-gg <- gg +  theme_qual()
+```{r windowdressing,fig.cap="A second version of the plot with changes made to several theme variables.",fig.width=5,fig.height=5,message=FALSE,warning=FALSE,tidy=FALSE,}
+gg <- gg + theme_qual()
 gg <- gg + scale_fill_brewer(type = "qual")
 gg <- gg + scale_y_continuous(labels = percent)
 gg <- gg + guides(fill = guide_legend(keywidth = 0.8, 
@@ -236,7 +237,6 @@ gg <- gg + guides(fill = guide_legend(keywidth = 0.8,
                                       byrow = TRUE))  
 gg
 ```
-\clearpage
 
 # An alternative Plot
 
@@ -248,6 +248,7 @@ dfSdmx$GEO <-  factor(dfSdmx$GEO, levels = rev(levels(dfSdmx$GEO)))
 gg <- gg %+% dfSdmx
 gg <- gg + coord_cartesian()+facet_wrap(facets = "labels",nrow = 5)
 gg <- gg + scale_fill_brewer(type = "qual",guide=FALSE)
+gg <- gg +theme(axis.text.x=element_text(angle = 45))
 gg
 ```
 
