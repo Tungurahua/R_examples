@@ -5,6 +5,12 @@ date: "March 5th, 2015"
 output: rmarkdown::tufte_handout
 ---
 
+```{r setup,include=FALSE}
+  library(knitr)
+  opts_knit$set(root.dir=normalizePath('../'))
+```
+
+
 # Introduction
 This document shows how to create a choroplete map from Eurostat Data using R. For this example I aimed to automate the entire process from downloading the data to the creation of the figure. The idea is to present an entirely reproducible process. The text shows the overall process from a birds-eye perspective. In particular it is not intended to serve as a general introduction to R[^quickR] or a discussion of the Pros and cons of using choropletes to display data. 
 
