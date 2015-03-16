@@ -1,3 +1,5 @@
+## @knitr variablesXY
+
 library(rgeos)
 library(rgdal) # needs gdal > 1.11.0
 library(ggplot2)
