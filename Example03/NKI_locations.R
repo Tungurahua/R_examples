@@ -1,22 +1,27 @@
-## @knitr variablesXY
-
+## @knitr setting_scene
 library(rgeos)
 library(rgdal) # needs gdal > 1.11.0
 library(ggplot2)
 library(raster)
 library(ggmap)
 
+
+## @knitr read_csv
 # Read the *.csv with the names
 kommunen <- read.csv("resources/kommunen.csv")
-kommunen$names
 
+
+## @knitr get_adm_data
 # Get administrative boundaries for Germany
-gadm1 <- getData('GADM', country='DEU', level=1,path = "data/")
+gadm1 <- getData('GADM', country='DEU', level=1,path = "data/") 
 gadm3 <- getData('GADM', country='DEU', level=3,path = "data/")
+
+
+## @knitr select_data
 # Subset to those named in "kommunen" for which Antwort=TRUE
 gadm3 <- subset(gadm3, NAME_3 %in% kommunen[which(kommunen$Antwort==TRUE),]$gadm3)
 
-# Of the subset gadm3 take polygon centers for labelling
+# take polygon centers for labelling
 # getting geocodes would be more exact
 NKInames <- as.data.frame(coordinates(gadm3))
 NKInames$label <- gadm3@data$NAME_3 
@@ -26,26 +31,40 @@ names(NKInames) <- c("x","y","label")
 NKInames <- merge(NKInames,kommunen[,2:5],by.x = "label",by.y= "gadm3", )
 head(NKInames)
 
-# Fortify to use with ggplot
+NKInames <- geocode(c("Flensburg","Steinfurt",
+          "Herten","Goettingen",
+          "Frankfurt am Main", "Nalbach",
+          "Neumarkt in der Oberpfalz", 
+          "Kempten"),output=c("latlona"))
+
+
+
+# Fortify the dataframes to use with ggplot
 adm1 <- fortify(gadm1)
 adm3 <- fortify(gadm3)
 
+
+## @knitr prepare_plotting
 # Get theme from devtools
 devtools::source_gist("https://gist.github.com/hrbrmstr/33baa3a79c5cfef0f6df")
 
 
+## @knitr plotting
 # Do the plotting
 gg <- ggplot()
 gg <- gg + theme_map()
 gg <- gg + geom_map(data=adm1, map=adm1,
                     aes(map_id=id, x=long, y=lat, group=group),
                     color="#ffffff", fill="#bbbbbb", size=0.25)
-gg <- gg + geom_point(data=NKInames, aes(x=x, y=y))
-gg <- gg + geom_text(data=NKInames, aes(label=lsNames, x=x, y=y), size=3,vjust=-0.5,hjust=0.01)
+gg <- gg + geom_point(data=NKInames, aes(x=lon, y=lat))
+gg <- gg + geom_text(data=NKInames, aes(label=address, x=lon, y=lat), size=3,vjust=-0.5,hjust=0.01)
 gg <- gg + coord_map()
 gg <- gg + labs(x="", y="", title="") #+ theme(plot.title=element_text(vjust=-3))
 gg
 
+## @knitr saving
+
+# Save the figure in different file formats
 ggsave("Example03/NKImap2.pdf",width = 4,height=5)
 ggsave("Example03/NKImap2.png",width = 4,height=5)
 ggsave("Example03/NKImap2.wmf",width = 4,height=5)

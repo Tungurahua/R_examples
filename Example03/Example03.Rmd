@@ -1,0 +1,51 @@
+---
+title: "Creating a Map with location-markers"
+author: "Albrecht Gradmann"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: pdf_document
+---
+```{r setup,include=FALSE}
+library(knitr)
+opts_chunk$set(message=FALSE,results='hide')
+opts_knit$set(root.dir=normalizePath('../'))
+```
+
+```{r,cache=FALSE,eval=T,echo=FALSE}
+read_chunk('Example03/NKI_locations.R')
+```
+
+
+
+
+```{r chunk1,ref.label='setting_scene',results='hide'}
+
+```
+
+```{r chunk1b,ref.label='read_csv',results='hide'}
+
+```
+
+
+```{r chunk2,ref.label='get_adm_data',results='hide'}
+
+```
+
+```{r chunk3,ref.label='select_data',results='hide'}
+
+```
+
+```{r chunk4,ref.label='prepare_plotting',results='hide'}
+
+```
+
+```{r chunk5,ref.label='plotting',results='hide'}
+
+```
+
+```{r chunk6,ref.label='saving',results='hide'}
+
+```
+
+
+
+
