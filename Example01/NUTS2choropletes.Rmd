@@ -276,7 +276,6 @@ map <- map + theme(
     legend.key.size = unit(10,"pt"),
     text=element_text(size=8),
     legend.position=c(0.1, 0.2))
-
 ```
 
 # The Result
@@ -285,10 +284,10 @@ Below you will find the so-far final version of the plot. There are still severa
 
 ```{r lastTouch, include=FALSE,cache=TRUE}
 # Get the shapefile and unzip it
-#download.file("http://thematicmapping.org/downloads/TM_WORLD_BORDERS-0.3.zip", destfile = "shp/TM_WORLD_BORDERS-0.3.zip")
-#unzip("shp/TM_WORLD_BORDERS-0.3.zip", exdir="shp/TM_WORLD_BORDERS-0.3")
+#download.file("http://thematicmapping.org/downloads/TM_WORLD_BORDERS-0.3.zip", destfile = "data/TM_WORLD_BORDERS-0.3.zip")
+#unzip("data/TM_WORLD_BORDERS-0.3.zip", exdir="data/TM_WORLD_BORDERS-0.3")
 
-TM_WORLD_BORDERS3 <- readOGR("shp/TM_WORLD_BORDERS-0.3/",
+TM_WORLD_BORDERS3 <- readOGR("data/TM_WORLD_BORDERS-0.3",
                   "TM_WORLD_BORDERS-0.3")
 TM_WORLD_BORDERS3  <- spTransform(TM_WORLD_BORDERS3 , 
                       CRS("+proj=longlat +datum=WGS84")) 
