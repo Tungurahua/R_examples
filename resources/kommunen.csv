@@ -1,19 +1,19 @@
-,"codes","names","lsNames","gadm3","Antwort"
-7,"DEC05","Saarpfalz-Kreis","St Ingbert","Saarpfalz",FALSE
-10,"DEC04","Saarlouis","Gemeinde Nalbach","Saarlouis",TRUE
-117,"DEF01","Flensburg, Kreisfreie Stadt","Flensburg","Flensburg StÃ¤dte",TRUE
-151,"DE94E","OsnabrÃ¼ck, Landkreis","LK OnsabrÃ¼ck","OsnabrÃ¼ck",FALSE
-161,"DE944","OsnabrÃ¼ck, Kreisfreie Stadt","Stadt OsnabrÃ¼ck","OsnabrÃ¼ck StÃ¤dte",FALSE
-195,"DE929","Region Hannover","Region Hannover","missing",FALSE
-231,"DE915","GÃ¶ttingen","Stadt GÃ¶ttingen","GÃ¶ttingen",TRUE
-308,"DE92","Hannover","Stadt Hannover","Hanover",FALSE
-486,"DE273","Kempten (AllgÃ¤u), Kreisfreie Stadt","Stadt Kempten","Kempten StÃ¤dte",TRUE
-631,"DE236","Neumarkt in der Oberpfalz","Neumarkt","Neumarkt",TRUE
-915,"DE803","Rostock, Kreisfreie Stadt","Hansestadt Rostock","Rostock StÃ¤dte",FALSE
-1079,"DEA5A","Siegen-Wittgenstein","Gemeinde Burbach","Siegen-Wittgenstein",FALSE
-1117,"DEA37","Steinfurt","LK Steinfurt","Steinfurt",TRUE
-1118,"DEA36","Recklinghausen","Stadt Herten","Recklinghausen",TRUE
-1185,"DE125","Heidelberg, Stadtkreis","Stadt Heidelberg","Heidelberg StÃ¤dte",FALSE
-1484,"DE724","Marburg-Biedenkopf","Marburg-Biedenkopf","Marburg-Biedenkopf",FALSE
-1526,"DE715","BergstraÃŸe","Stadt Bensheim","BergstraÃŸe",FALSE
-1530,"DE712","Frankfurt am Main, Kreisfreie Stadt","Frankfurt am Main","Frankfurt am Main StÃ¤dte",TRUE
+,codes,names,lsNames,gadm3,Antwort
+7,5-Dec,Saarpfalz-Kreis,St Ingbert,Saarpfalz,FALSE
+10,4-Dec,Saarlouis,Gemeinde Nalbach,Saarlouis,TRUE
+117,DEF01,"Flensburg, Kreisfreie Stadt",Flensburg,Flensburg Städte,TRUE
+151,DE94E,"Osnabrück, Landkreis",LK Onsabrück,Osnabrück,FALSE
+161,DE944,"Osnabrück, Kreisfreie Stadt",Stadt Osnabrück,Osnabrück Städte,FALSE
+195,DE929,Region Hannover,Region Hannover,missing,FALSE
+231,DE915,Göttingen,Stadt Göttingen,Göttingen,TRUE
+308,DE92,Hannover,Stadt Hannover,Hanover,FALSE
+486,DE273,"Kempten (Allgäu), Kreisfreie Stadt",Stadt Kempten,Kempten Städte,TRUE
+631,DE236,Neumarkt in der Oberpfalz,Neumarkt,Neumarkt,TRUE
+915,DE803,"Rostock, Kreisfreie Stadt",Hansestadt Rostock,Rostock Städte,FALSE
+1079,DEA5A,Siegen-Wittgenstein,Gemeinde Burbach,Siegen-Wittgenstein,FALSE
+1117,DEA37,Steinfurt,LK Steinfurt,Steinfurt,TRUE
+1118,DEA36,Recklinghausen,Stadt Herten,Recklinghausen,TRUE
+1185,DE125,"Heidelberg, Stadtkreis",Stadt Heidelberg,Heidelberg Städte,FALSE
+1484,DE724,Marburg-Biedenkopf,Marburg-Biedenkopf,Marburg-Biedenkopf,FALSE
+1526,DE715,Bergstraße,Stadt Bensheim,Bergstraße,FALSE
+1530,DE712,"Frankfurt am Main, Kreisfreie Stadt",Frankfurt am Main,Frankfurt am Main Städte,TRUE

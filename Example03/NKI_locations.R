@@ -5,14 +5,14 @@ library(raster)
 library(ggmap)
 
 # Read the *.csv with the names
-kommunen <- read.csv("resources/kommunen.csv",encoding="UTF8")
-
+kommunen <- read.csv("resources/kommunen.csv")
+kommunen$names
 
 # Get administrative boundaries for Germany
 gadm1 <- getData('GADM', country='DEU', level=1,path = "data/")
 gadm3 <- getData('GADM', country='DEU', level=3,path = "data/")
 # Subset to those named in "kommunen" for which Antwort=TRUE
-gadm3 <- subset(gadm3, NAME_3 %in% kommunen[which(kommunen$Antwort=="TRUE"),]$gadm3)
+gadm3 <- subset(gadm3, NAME_3 %in% kommunen[which(kommunen$Antwort==TRUE),]$gadm3)
 
 # Of the subset gadm3 take polygon centers for labelling
 # getting geocodes would be more exact
@@ -44,5 +44,6 @@ gg <- gg + coord_map()
 gg <- gg + labs(x="", y="", title="") #+ theme(plot.title=element_text(vjust=-3))
 gg
 
-ggsave("NKImap2.pdf",width = 6)
-ggsave("NKImap2.png",width=6)
+ggsave("Example03/NKImap2.pdf",width = 4,height=5)
+ggsave("Example03/NKImap2.png",width = 4,height=5)
+ggsave("Example03/NKImap2.wmf",width = 4,height=5)
