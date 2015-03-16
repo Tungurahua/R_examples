@@ -1,7 +1,7 @@
 ---
 title: "Accessing RSDMX-data from R"
 author: "Albrecht Gradmann"
-date: "March 10th, 2015"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
 header-includes:
    - \usepackage{url}
 output: rmarkdown::tufte_handout
