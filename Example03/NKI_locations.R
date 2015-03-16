@@ -84,7 +84,8 @@ gg <- gg + geom_point()
 gg <- gg + geom_text(aes(label=labels),
                      size=3,
                      vjust=-0.5,
-                     hjust=0.01) 
+                     hjust=0.01)#,
+                     #position = position_jitter(width=0.1, height=0)) 
 
 gg <- gg + theme_map()
 gg <- gg + coord_map()
@@ -97,5 +98,6 @@ gg
 
 # Save the figure in different file formats
 ggsave("Example03/NKImap2.pdf",width = 7,height=7)
+ggsave("Example03/NKImap2.svg",width = 7,height=7)
 ggsave("Example03/NKImap2.png",width = 7,height=7)
 if(.Platform$OS.type == "windows")ggsave("Example03/NKImap2.wmf",width = 4,height=5)
