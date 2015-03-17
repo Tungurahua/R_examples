@@ -1,0 +1,213 @@
+---
+title: "Untitled"
+output: ioslides_presentation
+---
+
+```{r setup,include=FALSE}
+library(knitr)
+opts_chunk$set(message=FALSE,results='hide')
+opts_knit$set(root.dir=normalizePath('../'))
+```
+
+```{r,cache=FALSE,eval=T,echo=FALSE}
+read_chunk('Example01/NUTS2choropletes_script.R')
+```
+
+
+
+## R Markdown
+
+
+
+This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+***  
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document.
+
+## Slide with Bullets
+
+- [^Eurostat_maps]
+- Bullet 2
+- Bullet 3
+
+## Slide with R Code and Output
+
+```{r}
+summary(cars)
+```
+
+## Slide with Plot
+
+```{r, echo=FALSE}
+plot(cars)
+```
+
+## Introduction
+
+# Setting the scene
+
+## Loading Libraries
+```{r libraries,results='hide',tidy=FALSE,message=FALSE}
+<<libraries>>
+```
+Before going through the things, we will run libraries
+
+## Getting the unemployment data
+
+```{r get_data,message=FALSE,tidy=FALSE,cache=TRUE}
+<<get_data>>
+```
+
+```{r convert_data,message=FALSE,tidy=FALSE,cache=TRUE}
+<<convert_data>>
+```
+
+## Looking at data
+```{r show_tsDf, results='markup',echo=FALSE}
+head(tsDf[-1])
+```
+
+## The sub-setting step
+```{r subset_data,message=FALSE,tidy=FALSE}
+<<r subset_data>>
+```
+
+
+## Getting the empty maps
+```{r download_shp,message=FALSE,tidy=F,cache=TRUE}
+<<download_shp>>
+```
+
+
+```{r Read_shp,message=FALSE,tidy=F,cache=TRUE,warning=FALSE,results='hide'}
+<<Read_shp>> 
+```
+
+
+```{r convert_shp,message=FALSE,tidy=F,warning=FALSE,results='hide'}
+<<convert_shp>>
+```
+
+
+```{r merge_data,message=FALSE,tidy=F}
+<<merge_data>>
+```
+
+```{r order_data,message=FALSE,tidy=F}
+<<order_data>> 
+```
+
+# Plotting the data
+## Creating the first draft
+```{r first_plot,fig.show='hide'}
+<<first_plot>>
+```
+
+## Creating the first draft
+```{r first_plot2,echo=FALSE,fig.show='asis'}
+<<first_plot>>
+```
+
+
+## Putting Europe into focus
+
+```{r put_EU_in_focus,fig.show='hide'}
+<<put_EU_in_focus>>
+```
+
+## Putting Europe into focus
+
+```{r put_EU_in_focus2,echo=FALSE,fig.show='asis'}
+<<put_EU_in_focus>>
+```
+
+
+## Bin data into classes
+
+```{r bin_data,fig.show='hide'}
+<<bin_data>>  
+```
+
+## Bin data into classes
+```{r bin_data2,message=FALSE,echo=FALSE,fig.show='asis'}
+<<bin_data>>  
+```
+
+
+## Fix color and legend
+
+```{r set_colors,message=FALSE,tidy=F,fig.margin = TRUE}
+<<set_colors>>
+```
+
+
+
+
+
+## Add country borders
+
+```{r add_borders,message=FALSE,tidy=F,fig.margin = TRUE}
+<<add_borders>>
+```
+
+
+## Change projection
+
+
+```{r change_projection,message=FALSE,tidy=F,fig.margin = TRUE}
+<<change_projection>>
+```
+
+
+## Some window dressing
+
+
+```{r window_dressing,message=FALSE,tidy=F,fig.margin = TRUE}
+<<window_dressing>>
+```
+
+## The Result
+
+```{r lastTouch, include=FALSE,cache=TRUE}
+<<lastTouch>>
+```
+
+
+
+EU 2013 Unemployment rates by NUTS2 regions, percentage of total population, both sexes Source: Eurostat (tgs00010)
+```{r final_plot,echo=FALSE}
+<<final_plot>> 
+```
+
+
+
+# Concluding remarks and Credits
+
+
+<!-- References --> 
+[^Wickham]: Hadley Wickhams `ggplot2` is a very versatile and popular graphics package for R. http://ggplot2.org/
+[^tufte_latex]: https://code.google.com/p/tufte-latex/
+
+[^howto_install]: How to install packages in R http://tinyurl.com/nh7whtp
+[^Eurostat_maps]: Administrative boundary shape files at Eurostat http://ec.europa.eu/eurostat/web/gisco/geodata/reference-data/administrative-units-statistical-units
+[^SO]: Stack-Overflow - a community based help site. http://stackoverflow.com/
+[^MMarchi]:Max Marchis Blog http://www.milanor.net/blog/?p=594
+[^announce_eurostat]:http://rstudio-pubs-static.s3.amazonaws.com/27120_4dea44a84c9247c797289e145c17b38d.html
+[^ggdoc]:Online Documentation of Hadley Wickhams `ggplot2` package. http://docs.ggplot2.org/current/
+[^quickR]:One of many good introductory sites for R. http://www.statmethods.net/
+
+[^Wilkinson]: Wilkinson: The Grammar of Graphics. 
+Springer-Verlag New York, 2005.
+
+[^rpubs_lovelace]:http://rpubs.com/RobinLovelace/ggmap
+[^ggmap_cheat]:https://www.nceas.ucsb.edu/~frazier/RSpatialGuides/ggmap/ggmapCheatsheet.pdf
+[^colorbrewer]:Color advice for maps. http://colorbrewer2.org/
+[^regex]: While intimidating at first regular expressions are a very powerful tool for any data work. http://www.regular-expressions.info/rlanguage.html
+[^xkcd_proj]: xkcd explains what map projections tell about you http://xkcd.com/977/
+[^projections]: An overview of map projections. http://www.colorado.edu/geography/gcraft/notes/mapproj/mapproj_f.html
+[^dbjoins]: More information about database joins http://blog.codinghorror.com/a-visual-explanation-of-sql-joins/
+[^graphicDev]: Output options from R http://www.cookbook-r.com/Graphs/Output_to_a_file/
+[^figLnk]: How to link figures in Word. http://tinyurl.com/ccumxd
+[^balkans]: Analysis of the availability and the quality of data on western balkans and Turkey - 2011 http://tinyurl.com/ngrhbpd
+

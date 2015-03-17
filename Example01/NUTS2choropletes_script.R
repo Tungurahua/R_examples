@@ -115,10 +115,6 @@ map
 
 
 ## @knitr add_borders
-# Borders on NUTS2 level in white
-#map <- map + geom_path(color="white",size=0.01)
-#map
-
 # Borders on NUTS0 level in black
 rindex <- grep(eurMapDf$id,pattern=c("^[[:alpha:]]{2}$"))
 eurMapDf_NUTS0 <- eurMapDf[rindex,]
