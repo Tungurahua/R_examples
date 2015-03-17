@@ -20,7 +20,7 @@ Header | Header2| Header3
 -------|--------|--------
 Ich|bin|ein Hengst
 
-
+***
 
 This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
