@@ -21,7 +21,7 @@ tsDf <- sdmxdf(tsList,meta = T)
 
 ## @knitr subset_data
 # Subset to exclude Turkey
-tsDfsub <-  subset(tsDf, 
+tsDf <-  subset(tsDf, 
                    !grepl(c("TR"),GEO))
 
 
@@ -57,7 +57,7 @@ eurMapDf <- fortify(eurMap, region="NUTS_ID")
 
 ## @knitr merge_data
 # merge map and data
-tsMapDf <- merge(eurMapDf, tsDfsub, 
+tsMapDf <- merge(eurMapDf, tsDf, 
                  by.x="id", by.y="GEO")
 
 ## @knitr order_data
@@ -168,7 +168,7 @@ TMdf <- subset(TMdf,
                     lat > min(europe.limits$lat) & 
                     lat < max(europe.limits$lat))
 
-TMdf2 <- TMdf[which(TMdf$id %in% c("BA","RS","ME","AL","TR")),]
+TMdf2 <- TMdf[which(TMdf$id %in% c("BA","RS","ME","AL","TR","CH","IS")),]
 
 map <- map + geom_polygon(data = TMdf2,aes(x=long, 
                                           y=lat, 
