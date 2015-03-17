@@ -180,7 +180,7 @@ map <- map + geom_path(data=TMdf2, color='black', size=0.01)
 
 
 
-## @knitr final.plot
+## @knitr final_plot
 map 
 
 

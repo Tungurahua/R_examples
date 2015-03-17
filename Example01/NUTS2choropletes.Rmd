@@ -224,8 +224,8 @@ Below you will find the so-far final version of the plot. There are still severa
 
 
 
-```{r final.plot, fig.cap = "EU 2013 Unemployment rates by NUTS2 regions, percentage of total population, both sexes Source: Eurostat (tgs00010)",echo=FALSE}
-<<final.plot>> 
+```{r final_plot, fig.cap = "EU 2013 Unemployment rates by NUTS2 regions, percentage of total population, both sexes Source: Eurostat (tgs00010)",echo=FALSE}
+<<final_plot>> 
 ```
 
 
