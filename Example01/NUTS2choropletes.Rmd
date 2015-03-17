@@ -7,7 +7,12 @@ output: rmarkdown::tufte_handout
 
 ```{r setup,include=FALSE}
 library(knitr)
+opts_chunk$set(message=FALSE,results='hide')
 opts_knit$set(root.dir=normalizePath('../'))
+```
+
+```{r,cache=FALSE,eval=T,echo=FALSE}
+read_chunk('Example01/NUTS2choropletes_script.R')
 ```
 
 
@@ -26,13 +31,9 @@ The example relies on a series of libraries which have to be installed on your s
 If you want to reproduce the results present in this document, you can copy-paste the code snippets into an R session. If you prefer the original source files, please send me an email and I will provide them happily. 
 
 ```{r libraries,results='hide',tidy=FALSE,message=FALSE}
-library(maptools) # Dealing with spatial data
-library(ggplot2)  # Hadley Wickham plotting package
-library(ggmap)    # Mapping with ggplot
-library(RJSDMX)   # Query Eurostat REST-interface
-library(grid)     # Needed for unit() function
-library(rgdal)    # Provides driver to read .shp files
+<<libraries>>
 ```
+
 ```{r layout_libs,echo=FALSE,message=FALSE}
 library(xtable)
 ```
@@ -43,17 +44,14 @@ library(xtable)
 Eurostat provides several interfaces for access to data ranging from the online data-browser over the 'bulk-download-facility' to programmatic interfaces using `REST` or `SOAP`^[`REST` and `SOAP` the names of internet protocols. You don't have to bother with the details.]. While each of these interfaces has its own merits, a programmatic access to the `REST` interface is shown below. A programmatic access ensures that the creation of the figure is indeed reproducible. Provided access to the script used the process of creating the figure is unambiguously defined. In addition this approach allows the re-use and modularization of individual steps at a later stage.
 
 We use the `getTimeSeries()` function to download the dataset from Eurostat. R provides some facilities to browse the Eurostat database.  The details of these facilities and an explanation how to define the arguments will be topic of another handout. The code below basically tells R to got to the Eurostat website, look for a dataset called `tgs00010` and from this to select annual data (that's the `A`), measured as percentage (the `PC` part) for both sexes (`T` stands for total) and for all available geographic entities (`*` means 'take all'). The `start` and `stop` arguments define the timespan for which we want to get the data.
+
 ```{r get_data,message=FALSE,tidy=FALSE,cache=TRUE}
-# Get the data formatted as list from Eurostat
-tsList <- getTimeSeries('EUROSTAT',
-                       'tgs00010.A.PC.T.*',
-                       start = "2013",
-                       end="2013")
+<<get_data>>
 ```
+
 The next step is to convert the downloaded data into a format suitable for further processing. Without going into too much detail, a `data-frame` is basically the way most R methods read data. It is basically a collection of variables of the same length.  
 ```{r convert_data,message=FALSE,tidy=FALSE,cache=TRUE}
-# Convert the list into a dataframe
-tsDf <- sdmxdf(tsList,meta = T)
+<<convert_data>>
 ```
 
 The table below shows the resulting data which is now stored in the `data-frame`. 
@@ -78,46 +76,30 @@ If you ever browsed for data on the Eurostat website, you will probably recogniz
 Further inspection of the dataset reveals that figures for Turkey are included in the dataset. We use the following command to filter out all rows that start with TR. While in this case a relatively simple search string can be used, you should know that R is fully capable of interpreting regular expressions (REGEX)  allowing the definition of more sophisticated filter criteria. [^regex] the A last step we need to take for the 
 
 ```{r subset_data,message=FALSE,tidy=FALSE}
-# Subset to exclude Turkey
-tsDfsub <-  subset(tsDf, 
-                   !grepl(c("TR"),GEO))
+<<r subset_data>>
 ```
 
 Now as we have gathered and prepared the unemployment data from Eurostat, our next step will be the acquisition of spatial data.
 
 # Getting the empty maps
 For the creation of choroplete maps we need information about the geographical extent of the NUTS-2 regions. This information is provided from Eurostat in the form of ESRI-shapefiles [^Eurostat_maps]. The appropriate shapefiles will be downloaded programmatically. As they are provided as zip-files we need to unpack them for further processing.
+
+
+
 ```{r download_shp,message=FALSE,tidy=F,cache=TRUE}
-# Get the shapefile from Eurostat
-download.file(paste0("http://ec.europa.eu/eurostat/cache/",
-                     "GISCO/geodatafiles/NUTS_2010_60M_SH.zip"),
-              destfile = "data/NUTS_2010_60M_SH.zip")
-
-# Unzip the data in a temporary location
-unzip("data/NUTS_2010_60M_SH.zip",
-      exdir="data/NUTS_2010_60M_SH")
-
+<<download_shp>>
 ```
 
 Once the archive has been extracted, we can create the information into a `SpatialPolygonsDataframe` which is basically a processed shapefile ready for further treatment in R. We also set the map projection to WGS84. While a discussion of projections  [^projections]  is fay beyond the scope of this paper it is important to understand that this is a crucial step in any mapwork, especially if you aim to merge spatial data from different sources. Not knowing the projection of the data will then most likely lead to disaster.
 
 ```{r Read_shp,message=FALSE,tidy=F,cache=TRUE,warning=FALSE,results='hide'}
-# Read administrative boundaries 
-# and set appropriate Transformation
-eurMap <- readOGR(paste0("data/NUTS_2010_60M_SH/NUTS_2010_60M_SH/",
-                         "NUTS_2010_60M_SH/data"),
-                  "NUTS_RG_60M_2010")
-
-# Set appropriate projection
-eurMap <- spTransform(eurMap, 
-                      CRS("+proj=longlat +datum=WGS84")) 
+<<Read_shp>> 
 ```
 
 As a last step we need to convert the `SpatialPolygonsDataframe` into a regular `dataframe`. This requirement comes from our usage of the `ggplot` package for doing the actual plotting routine, which expects `dataframes` as inputs.
 
 ```{r convert_shp,message=FALSE,tidy=F,warning=FALSE,results='hide'}
-# Convert into a dataframe suitable for plotting
-eurMapDf <- fortify(eurMap, region="NUTS_ID")
+<<convert_shp>>
 ```
 
 ```{r show_eurMapDf, results='asis',echo=FALSE}
@@ -145,16 +127,13 @@ The last variable `id` however is crucial. It contains the names of all polygons
 Merging the unemployment and geographical data is achieved by telling R the respective datasets and name the columns to merge on. Note that this process of  join two data frames by one or more common key variables is what is called an 'inner join' in `SQL`. R also provides functions to carry out more complex joins. 
 
 ```{r merge_data,message=FALSE,tidy=F}
-# merge map and data
-tsMapDf <- merge(eurMapDf, tsDfsub, 
-                 by.x="id", by.y="GEO")
+<<merge_data>>
 ```
 
 As noted before, the records of the merged dataframe have to be sorted in the order in which they will be drawn to the graphics device.
 
 ```{r order_data,message=FALSE,tidy=F}
-# put data in correct order for plotting
-tsMapDf <- tsMapDf[order(tsMapDf$order),] 
+<<order_data>> 
 ```
 
 With the merge of the two datasets we have concluded all steps in the process of gathering data and preparing it for plotting. 
@@ -166,11 +145,7 @@ The remainder of this document will deal with the process of a final plot from a
 Creating a first draft of the plot does not take much code. The syntax used is based on Leland Wilkinsons Grammar of Graphics as mentioned in the introduction. This may be a puzzling concept at first. In the end however it proves to be a tool that enables the user  to concisely describe the components of a graphic in a logical manner. 
 
 ```{r first_plot,fig.margin=T,fig.cap="An initial version of our map",}
-# inverse order (to have visible borders)
-map <- ggplot(data=tsMapDf,
-              aes(x=long, y=lat, group=group))
-map <- map + geom_polygon(aes(fill=OBS)) 
-map
+<<first_plot>>
 ```
 
 Although this first draft is  far from perfect it is already suitable to check if the graphic makes sense and actually reveals any interesting information. An initial inspection reveals that unemployment rates are highest in southern Spain and Greece. If this is a point we would like to make, we can further tune the graphic. While this is an initial version still, it can make sense to include it as a placeholder in a report draft. R can output the graphics in many different file formats [^graphicDev] that play well with different text editing and layout software. In Word you can link the figure data file so that it updates once a new version has been created in R.[^figLnk] 
@@ -178,39 +153,24 @@ Although this first draft is  far from perfect it is already suitable to check i
 
 ## Putting Europe into focus
 Our initial map contains regions which are far away from mainland Europe. These are mostly french DOM regions. To make the plot more readable we limit the graphic to mainland Europe.
+
 ```{r put_EU_in_focus,message=FALSE,tidy=F,fig.margin = TRUE}
-#limit data to main Europe
-europe.limits <- geocode(c("Cape Fligely, Rudolf Island,
-                           Franz Josef Land, Russia", 
-                           "Gavdos, Greece", "Faja Grande,Azores", 
-                           "Severny Island, Novaya Zemlya, Russia"))
-
-# apply the limits to our dataset
-tsMapDf <- subset(tsMapDf, 
-                       long > min(europe.limits$lon) &
-                       long < max(europe.limits$lon) & 
-                       lat > min(europe.limits$lat) & 
-                       lat < max(europe.limits$lat))
-
-# and re-read the plot with the new data
-map <- map %+% tsMapDf 
-map
+<<put_EU_in_focus>>
 ```
+
+
 If DOM or similar regions are of specific interest, they could be added as inset graphics at a later stage.
 
 
 ## Bin data into classes
 R treats the unemployment figures as a continuous variable. To get a better feeling of the actual level of unemployment in the respective regions we can group the regions into different classes. This process is called \emph{binning} and is essentially a transformation into a discrete variable.
+
+
 ```{r bin_data,message=FALSE,tidy=F,fig.margin = TRUE}
-map <- ggplot(data=tsMapDf,
-              aes(x=long, 
-                  y=lat, 
-                  group=group)) 
-map <- map + geom_polygon(aes(fill=cut(OBS, 
-                                       breaks=c(0,10,20,30,100)))) 
-map <- map + theme(legend.title=element_blank())
-map
+<<bin_data>>  
 ```
+
+
 If we re-plot the map with binned data we get an awkward looking result; especially when printed in the margin. By default the software assigns automatic values for the legend labels resulting in a crushed plot. 
 
 
@@ -219,63 +179,38 @@ The default color palette is optimized for qualitative variables which have no i
 
 
 ```{r set_colors,message=FALSE,tidy=F,fig.margin = TRUE}
-
-map <- map + scale_fill_brewer(palette = "OrRd",
-                               name="",
-                               labels=c("0-10%",
-                                        "10-20%",
-                                        "20-30%",
-                                        ">30%"),
-                               guide="legend")
-map
+<<set_colors>>
 ```
+
+
 Re-coloring the classified data we can identify areas of high unemployment as red areas which actually makes sense as these are the areas that need attention.
 
 The labeling text of the legend has also been adapted in this step. 
 
 ## Add country borders
 Here we add the borders of regions an countries in different colors.
+
+
 ```{r add_borders,message=FALSE,tidy=F,fig.margin = TRUE}
-# Borders on NUTS2 level in white
-#map <- map + geom_path(color="white",size=0.01)
-map
-
-# Borders on NUTS0 level in black
-rindex <- grep(eurMapDf$id,pattern=c("^[[:alpha:]]{2}$"))
-eurMapDf_NUTS0 <- eurMapDf[rindex,]
-
-eurMapDf_NUTS0 <- subset(eurMapDf_NUTS0, 
-                       long > min(europe.limits$lon) &
-                         long < max(europe.limits$lon) & 
-                         lat > min(europe.limits$lat) & 
-                         lat < max(europe.limits$lat))
-
-map <- map + geom_path(data=eurMapDf_NUTS0, color='black', size=0.01)
-map
+<<add_borders>>
 ```
+
 
 ## Change projection
 Maps can be displayed in different projections and they reveal a lot about the creators personality.[^xkcd_proj]
+
+
 ```{r change_projection,message=FALSE,tidy=F,fig.margin = TRUE}
-map <- map + coord_map(projection = "mollweide")
-map
+<<change_projection>>
 ```
+
 
 ## Some window dressing
 These final steps address the overall appearance of the figure. While there is a lot of fine tuning going on, it is possible to save this information to a \emph{theme} which can be applied to all figures in a given text. This allows to streamline graphics within a publication or to adhere to standards of corporate design.
+
+
 ```{r window_dressing,message=FALSE,tidy=F,fig.margin = TRUE}
-map <- map + theme_bw()
-map <- map + theme(
-    plot.background = element_blank(),
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    panel.border = element_blank(),
-    axis.ticks = element_blank(),
-    axis.text = element_blank(),
-    axis.title = element_blank(),
-    legend.key.size = unit(10,"pt"),
-    text=element_text(size=8),
-    legend.position=c(0.1, 0.2))
+<<window_dressing>>
 ```
 
 # The Result
@@ -283,42 +218,14 @@ Below you will find the so-far final version of the plot. There are still severa
 
 
 ```{r lastTouch, include=FALSE,cache=TRUE}
-# Get the shapefile and unzip it
-#download.file("http://thematicmapping.org/downloads/TM_WORLD_BORDERS-0.3.zip", destfile = "data/TM_WORLD_BORDERS-0.3.zip")
-#unzip("data/TM_WORLD_BORDERS-0.3.zip", exdir="data/TM_WORLD_BORDERS-0.3")
-
-TM_WORLD_BORDERS3 <- readOGR("data/TM_WORLD_BORDERS-0.3",
-                  "TM_WORLD_BORDERS-0.3")
-TM_WORLD_BORDERS3  <- spTransform(TM_WORLD_BORDERS3 , 
-                      CRS("+proj=longlat +datum=WGS84")) 
-TMdf <- fortify(TM_WORLD_BORDERS3,region = "ISO2")
-
-## Wir brauchen Bosnien BA, Serbien RS, Makedonien ME, Albanine AL und Türkei 
-
-TMdf <- subset(TMdf, 
-                  long > min(europe.limits$lon) &
-                    long < max(europe.limits$lon) & 
-                    lat > min(europe.limits$lat) & 
-                    lat < max(europe.limits$lat))
-
-TMdf2 <- TMdf[which(TMdf$id %in% c("BA","RS","ME","AL","TR")),]
-
-map <- map + geom_polygon(data = TMdf2,aes(x=long, 
-                                          y=lat, 
-                                          group=group),fill="gray95")
-map <- map + geom_path(data=TMdf2, color='black', size=0.01)
+<<lastTouch>>
 ```
 
 
 
 
-
-
-
-```{r, fig.cap = "EU 2013 Unemployment rates by NUTS2 regions, percentage of total population, both sexes Source: Eurostat (tgs00010)",echo=FALSE}
-map 
-
-
+```{r final.plot, fig.cap = "EU 2013 Unemployment rates by NUTS2 regions, percentage of total population, both sexes Source: Eurostat (tgs00010)",echo=FALSE}
+<<final.plot>> 
 ```
 
 
