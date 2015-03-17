@@ -16,6 +16,9 @@ read_chunk('Example01/NUTS2choropletes_script.R')
 
 
 ## R Markdown
+Header | Header2| Header3
+-------|--------|--------
+Ich|bin|ein Hengst
 
 
 
