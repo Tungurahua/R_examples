@@ -1,3 +1,5 @@
+setwd("H:/Rprojects/R_examples")
+
 ## @knitr libraries
 library(maptools) # Dealing with spatial data
 library(ggplot2)  # Hadley Wickham plotting package
