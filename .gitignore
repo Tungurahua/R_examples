@@ -6,9 +6,11 @@ NUTS_2010_60M_SH
 
 # Output file formats
 *.pdf
+*.html
 
 ## All large data like shapefiles are in 'data' folder
 data/*
 
 ## Ignore all cache files from knitR
 *_cache
+*_files
