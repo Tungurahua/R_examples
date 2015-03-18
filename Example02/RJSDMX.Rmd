@@ -152,7 +152,7 @@ If you have reproduced the data on your computer, you might notice that the REST
 \begin{figure}
 \label{fig:catclass}
 %\centering
-\includegraphics[width=8cm]{../resources/Land_use_by_size_of_the_farms,_Slovenia,_2007.PNG}
+\includegraphics[width=8cm]{../resources/VARIABLE_struc.PNG}
 \caption{Hierarchical structure of the Size-of-farms statistics at Eurostat. The structure of the dataset does not match the with the one shown in figure \ref{fig:25_eurostat}. }
 \end{figure}
 

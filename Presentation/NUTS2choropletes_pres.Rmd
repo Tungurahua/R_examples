@@ -7,6 +7,8 @@ output: ioslides_presentation
 
 ```{r setup,include=FALSE}
 library(knitr)
+library(png)
+library(grid)
 opts_chunk$set(message=FALSE,results='hide')
 opts_knit$set(root.dir=normalizePath('../'))
 ```
@@ -19,12 +21,20 @@ read_chunk('Example01/NUTS2choropletes_script.R')
 
 
 ## Introduction
-![alt text](../resources/sdmx2.png)
 
 
 ## What is R
+```{r whatisR, echo=FALSE}
+img <- readPNG("resources/RStudio.png")
+grid.raster(img)
+```
 
+## What is SDMX
 
+```{r sdmx, echo=FALSE}
+img <- readPNG("resources/sdmx.png")
+grid.raster(img)
+```
 
 ## Use of libraries
 ```{r libraries,results='hide',tidy=FALSE,message=FALSE}
@@ -32,8 +42,14 @@ read_chunk('Example01/NUTS2choropletes_script.R')
 ```
 Before going through the things, we will run libraries
 
-# Getting the data
-## Getting the unemployment data
+# Getting data
+## Eurostat Databrowser
+```{r eurostat, echo=FALSE}
+img <- readPNG("resources/Eurostat_REST.PNG")
+grid.raster(img)
+```
+
+## RJSDMX methods
 We download the dataset from Eurostat
 ```{r get_data,message=FALSE,tidy=FALSE,cache=TRUE}
 <<get_data>>
@@ -43,26 +59,31 @@ We download the dataset from Eurostat
 <<convert_data>>
 ```
 
-## Looking at the data
+## Inspecting  the data-frame
 ```{r show_tsDf, results='markup',echo=FALSE}
 head(tsDf[c("FREQ","UNIT","SEX","GEO","TIME","OBS","STATUS")])
 ```
 
-## Getting the empty maps
+## Downloading geospatial data
 ```{r download_shp,message=FALSE,tidy=F,cache=TRUE}
 <<download_shp>>
 ```
 
-## Reading the maps
+## Processing geospatial data
 ```{r Read_shp,message=FALSE,tidy=F,cache=TRUE,warning=FALSE,results='hide'}
 <<Read_shp>> 
 ```
 
+## Inspecting the raw maps
+```{r plot_shp,message=FALSE,tidy=F,cache=TRUE,echo=FALSE,results='hide'}
+plot(eurMap) 
+```
+
+## Merge and order data
 ```{r convert_shp,message=FALSE,tidy=F,warning=FALSE,results='hide'}
 <<convert_shp>>
 ```
 
-## Merge and order data
 ```{r merge_data,message=FALSE,tidy=F}
 <<merge_data>>
 ```
@@ -71,13 +92,13 @@ head(tsDf[c("FREQ","UNIT","SEX","GEO","TIME","OBS","STATUS")])
 <<order_data>> 
 ```
 
-# Plotting the data
-## Creating the first draft
+# Plotting
+## Creating a first draft
 ```{r first_plot,fig.show='hide'}
 <<first_plot>>
 ```
 
-## Creating the first draft
+## Creating a first draft
 ```{r first_plot2,echo=FALSE,fig.show='asis'}
 <<first_plot>>
 ```
@@ -124,24 +145,34 @@ head(tsDf[c("FREQ","UNIT","SEX","GEO","TIME","OBS","STATUS")])
 
 
 ## Some window dressing
-```{r window_dressing,message=FALSE,tidy=F, include=FALSE}
+```{r window_dressing,message=FALSE,tidy=F, include=TRUE}
 <<window_dressing>>
 ```
 
-## The Result
+## The final figure
 
 ```{r lastTouch, include=FALSE,cache=TRUE}
 <<lastTouch>>
 ```
 
-
-
-
 ```{r final_plot,echo=FALSE}
 <<final_plot>> 
 ```
+
 EU 2013 Unemployment rates by NUTS2 regions, percentage of total population, both sexes Source: [Eurostat (tgs00010)](https://raw.githubusercontent.com/Tungurahua/R_examples/master/Example01/NUTS2choropletes_script.R)
 
 
-# Concluding remarks and Credits
+# Concluding remarks
+
+## Advantages of using R
+* Reproducable work
+* Unambiguous reference
+* Re-using earlier work
+* Workflow with early draft that is continuously refined
+* Tight integraition wiht [git](https://github.com/Tungurahua/R_examples)
+
+## Discussion
+
+Do we need this at Ecologic? What do you think?
+
 
