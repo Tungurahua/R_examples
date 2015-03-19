@@ -4,8 +4,9 @@ library(maptools) # Dealing with spatial data
 library(ggplot2)  # Hadley Wickham plotting package
 library(ggmap)    # Mapping with ggplot
 library(RJSDMX)   # Query Eurostat REST-interface
-library(grid)     # Needed for unit() function
 library(rgdal)    # Provides driver to read .shp files
+library(dplyr)    # Framework for data transformation
+library(grid)     # Needed for unit() function
 
 ## @knitr get_data
 # Get the data formatted as list from Eurostat
@@ -56,13 +57,15 @@ eurMapDf <- fortify(eurMap, region="NUTS_ID")
 
 
 ## @knitr merge_data
-# merge map and data
-tsMapDf <- merge(eurMapDf, tsDf, 
-                 by.x="id", by.y="GEO")
+# merge map and unemployment data
+tsMapDf <- 
+  eurMapDf %>%
+  inner_join(y = tsDf,
+             by = c("id" = "GEO")) %>%
+  mutate(id = as.factor(id)) %>%
+  arrange(order)
 
-## @knitr order_data
-# put data in correct order for plotting
-tsMapDf <- tsMapDf[order(tsMapDf$order),] 
+
 
 
 ## @knitr first_plot
@@ -136,9 +139,9 @@ map
 
 
 ## @knitr window_dressing
-map <- map + theme_bw()
-map <- map + theme(
-    plot.background = element_blank(),
+theme_map <- function() {
+  theme_bw() %+replace%
+  theme(plot.background = element_blank(),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     panel.border = element_blank(),
@@ -147,8 +150,10 @@ map <- map + theme(
     axis.title = element_blank(),
     legend.key.size = unit(10,"pt"),
     text=element_text(size=8),
-    legend.position=c(0.1, 0.2))
+    legend.position=c(0.1, 0.2))}
 
+## @knitr apply_theme
+map <- map + theme_map()
 
 ## @knitr lastTouch
 # Get the shapefile and unzip it

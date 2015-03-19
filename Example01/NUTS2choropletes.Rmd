@@ -131,11 +131,6 @@ Merging the unemployment and geographical data is achieved by telling R the resp
 ```
 
 As noted before, the records of the merged dataframe have to be sorted in the order in which they will be drawn to the graphics device.
-
-```{r order_data,message=FALSE,tidy=F}
-<<order_data>> 
-```
-
 With the merge of the two datasets we have concluded all steps in the process of gathering data and preparing it for plotting. 
 
 # Plotting the data
@@ -211,6 +206,10 @@ These final steps address the overall appearance of the figure. While there is a
 
 ```{r window_dressing,message=FALSE,tidy=F,fig.margin = TRUE}
 <<window_dressing>>
+```
+
+```{r apply_theme,message=FALSE,tidy=F,fig.margin = TRUE}
+<<apply_theme>>
 ```
 
 # The Result
