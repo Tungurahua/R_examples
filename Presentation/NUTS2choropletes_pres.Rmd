@@ -15,13 +15,14 @@ opts_knit$set(root.dir=normalizePath('../'))
 
 ```{r,cache=FALSE,eval=T,echo=FALSE}
 read_chunk('Example01/NUTS2choropletes_script.R')
+read_chunk('Example02/RJSDMX_script.R')
 ```
 
 
 
 
 ## Introduction  
-**R** is a free software environment for statistical computing and graphics. In this presentation I will show how to use some of R **libraries** to download data from Eurostat using the **SDMX** dataformat.
+**R** is a free software environment for statistical computing and graphics. In this presentation I will show how to use R to create figures from Eurostat data. The data will be download in **SDMX** format.
 
 
 
@@ -31,15 +32,16 @@ img <- readPNG("resources/RStudio.png")
 grid.raster(img)
 ```
 
-## Use of libraries 
+## A large range of packages
+In R several 1000 packages are available to facilitate all kinds of statistical analysis, data-work and visualization.
 
-Before going through the things, we will run libraries
 ```{r libraries,results='hide',tidy=FALSE,message=FALSE}
 <<libraries>>
 ```
 
 
-## What is SDMX
+## SDMX a Standard for public data
+Statistical Data and Metadata Exchange (2001)
 
 ```{r sdmx, echo=FALSE}
 img <- readPNG("resources/sdmx.png")
@@ -49,13 +51,13 @@ grid.raster(img)
 
 
 # Getting data
-## Eurostat Databrowser
+## Instead of the Eurostat Databrowser ...
 ```{r eurostat, echo=FALSE}
 img <- readPNG("resources/Eurostat_REST.PNG")
 grid.raster(img)
 ```
 
-## RJSDMX methods
+## ... use RJSDMX methods
 We download the dataset from Eurostat
 ```{r get_data,message=FALSE,tidy=FALSE,cache=TRUE}
 <<get_data>>
@@ -65,82 +67,82 @@ We download the dataset from Eurostat
 <<convert_data>>
 ```
 
-## Inspecting  the data-frame
+## Inspect the data-frame
 ```{r show_tsDf, results='markup',echo=2:3}
-tsDf2 <- tsDf[c("FREQ","UNIT","SEX","GEO","TIME","OBS")] 
-head(tsDf2, n = 4)
-str(tsDf2, width=50, strict.width = "cut")
+tsDF <- tsDf[c("FREQ","UNIT","SEX","GEO","TIME","OBS")] 
+head(tsDF, n = 4)
+str(tsDF, width=50, strict.width = "cut")
 ```
 
-## Downloading geospatial data
+## Download geospatial data
 ```{r download_shp,message=FALSE,tidy=F,cache=TRUE}
 <<download_shp>>
 ```
 
-## Processing geospatial data
+## Process geospatial data
 ```{r Read_shp,message=FALSE,tidy=F,cache=TRUE,warning=FALSE,results='hide'}
 <<Read_shp>> 
 ```
 
-## Inspecting the raw maps
-```{r plot_shp,message=FALSE,tidy=F,cache=TRUE,echo=FALSE,results='hide'}
-plot(eurMap) 
-```
 
 ## Merge and order data
-```{r convert_shp,message=FALSE,tidy=F,warning=FALSE,results='hide'}
+```{r convert_shp,message=FALSE,tidy=F,warning=FALSE,results='hide',cache=TRUE}
 <<convert_shp>>
 ```
 
-```{r merge_data,message=FALSE,tidy=F,warning=FALSE}
+```{r merge_data,message=FALSE,tidy=F,warning=FALSE,cache=TRUE}
 <<merge_data>>
 ```
 
 
 # Plotting
-## Creating a first draft
-```{r first_plot,fig.show='hide'}
+## Create a first draft
+```{r first_plot,fig.show='hide',cache=TRUE}
 <<first_plot>>
 ```
 
-## Creating a first draft
-```{r first_plot2,echo=FALSE,fig.show='asis'}
+## Create a first draft
+```{r first_plot2,echo=FALSE,fig.show='asis',cache=TRUE}
 <<first_plot>>
 ```
 
 
-## Putting Europe into focus
+## Put Europe into focus
 
-```{r put_EU_in_focus,fig.show='hide'}
+```{r put_EU_in_focus,fig.show='hide',cache=TRUE}
 <<put_EU_in_focus>>
 ```
 
-## Putting Europe into focus
+## Put Europe into focus
 
-```{r put_EU_in_focus2,echo=FALSE,fig.show='asis'}
+```{r put_EU_in_focus2,echo=FALSE,fig.show='asis',cache=TRUE}
 <<put_EU_in_focus>>
 ```
 
+## Define a theme 
+Themes allow to streamline appearance of graphs to consistently meet design guidelines
+```{r window_dressing,message=FALSE,tidy=F, include=TRUE}
+<<window_dressing>>
+```
 
-## Several other steps
+## Some final touches
 
-```{r bin_data,fig.show='hide',include=FALSE}
+```{r bin_data,fig.show='hide',include=FALSE,cache=TRUE}
 <<bin_data>>  
 ```
 
-* Bin Data
-* Fix colors and legend
+* Bin Data (discrete scale)
+* Choose colors and position legend
 * Add country borders
-* change projection
-* applying a theme
-* adding borders for Non-EU countries
+* Change projection
+* Apply the theme
 
 
-```{r set_colors,message=FALSE,tidy=F,include=FALSE}
+```{r set_colors,message=FALSE,tidy=F,include=FALSE,cache=TRUE}
 <<set_colors>>
 ```
 
-```{r add_borders,message=FALSE,tidy=F,include=FALSE}
+```{r add_borders,message=FALSE,tidy=F,include=FALSE,cache=TRUE}
 <<add_borders>>
 ```
 
@@ -149,12 +151,9 @@ plot(eurMap)
 ```
 
 
-## Some window dressing
-```{r window_dressing,message=FALSE,tidy=F, include=TRUE}
-<<window_dressing>>
-```
 
-## The final figure
+
+## A choroplete map
 
 ```{r lastTouch, include=FALSE,cache=TRUE}
 <<lastTouch>>
@@ -164,8 +163,59 @@ plot(eurMap)
 <<final_plot>> 
 ```
 
-EU 2013 Unemployment rates by NUTS2 regions, percentage of total population, both sexes Source: [Eurostat (tgs00010)](https://raw.githubusercontent.com/Tungurahua/R_examples/master/Example01/NUTS2choropletes_script.R)
+EU 2013 Unemployment rates by NUTS2 regions, percentage of total population. Source: [Eurostat (tgs00010)](https://raw.githubusercontent.com/Tungurahua/R_examples/master/Example01/NUTS2choropletes_script.R)
 
+## Facetted version of the map
+```{r facetting,echo=FALSE, cache=TRUE}
+<<facetting>> 
+```
+
+EU 2010-13 Unemployment rates by NUTS2 regions, percentage of total population Source: [Eurostat (tgs00010)](https://raw.githubusercontent.com/Tungurahua/R_examples/master/Example01/NUTS2choropletes_script.R)
+
+# Another example
+## A figure published by Eurostat
+```{r eurostatfig, echo=FALSE}
+img <- readPNG("resources/fig25_eurostat.PNG")
+grid.raster(img)
+```
+
+```{r getDatax,cache=TRUE,tidy=FALSE,include=FALSE}
+<<getDatax>>
+```
+
+```{r getCodesVARIABLE,cache=TRUE,tidy=FALSE,echo=-1,include=FALSE}
+<<getCodesVARIABLE>>
+```
+
+```{r headVARdic,results='markup',include=FALSE}
+<<headVARdic>>
+```
+
+```{r dplyr, warning=FALSE,message=FALSE,tidy=FALSE,include=FALSE}
+<<dplyr>>
+```
+
+
+## Reproduced in R
+```{r firstplot2,fig.cap="An initial version of the plot.",fig.width=5,fig.height=5,warning=FALSE,tidy=FALSE,fig.margin=T,include=FALSE}
+<<firstplotx>>
+```
+
+```{r theme2,message=FALSE,warning=FALSE,tidy=FALSE,include=FALSE}
+<<themex>>
+``` 
+
+```{r windowdressing2, message=FALSE,warning=FALSE,tidy=FALSE,echo=FALSE}
+<<windowdressingx>>
+```
+
+
+
+
+## Apply facets to improve readability
+```{r betterplot,fig.width=6,fig.height=6,warning=FALSE,message=FALSE,echo=FALSE}
+<<betterplot>>
+```
 
 # Concluding remarks
 

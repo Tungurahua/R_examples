@@ -7,23 +7,19 @@ library(RJSDMX)   # Query Eurostat REST-interface
 library(grid)     # Needed for unit() function
 library(rgdal)    # Provides driver to read .shp files
 library(dplyr)    # Framework for data transformation
+library(scales)   # Needed to display percentage scales
 
 ## @knitr get_data
 # Get the data formatted as list from Eurostat
 tsList <- getTimeSeries('EUROSTAT',
                        'tgs00010.A.PC.T.*',
-                       start = "2013",
+                       start = "2010",
                        end="2013")
 
 ## @knitr convert_data
 # Convert the list into a dataframe
 tsDf <- sdmxdf(tsList,meta = T)
 
-
-## @knitr subset_data
-# Subset to exclude Turkey
-tsDf <-  subset(tsDf, 
-                   !grepl(c("TR"),GEO))
 
 
 ## @knitr download_shp
@@ -57,20 +53,16 @@ eurMapDf <- fortify(eurMap, region="NUTS_ID")
 
 
 ## @knitr merge_data
-# merge map and unemployment data
-tsMapDf <- 
-  eurMapDf %>%
-  inner_join(y = tsDf,
-             by = c("id" = "GEO")) %>%
-  mutate(id = as.factor(id)) %>%
-  arrange(order)
-
+# merge map and data
+tsMapDf <- merge(eurMapDf, tsDf, 
+                 by.x="id", by.y="GEO")
+tsMapDf <- tsMapDf[order(tsMapDf$order),] 
 
 
 
 ## @knitr first_plot
 # inverse order (to have visible borders)
-map <- ggplot(data=tsMapDf,
+map <- ggplot(data=tsMapDf[which(tsMapDf$TIME == 2013),],
               aes(x=long, y=lat, group=group))
 map <- map + geom_polygon(aes(fill=OBS)) 
 map
@@ -184,4 +176,7 @@ map <- map + geom_path(data=TMdf2, color='black', size=0.01)
 map 
 
 
-
+## @knitr facetting
+map <- map %+% tsMapDf
+map <- map + facet_wrap(facets = "TIME")
+map + theme(legend.position=c(0.05, 0.2))
