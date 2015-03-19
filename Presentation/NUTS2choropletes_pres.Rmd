@@ -20,14 +20,24 @@ read_chunk('Example01/NUTS2choropletes_script.R')
 
 
 
-## Introduction
+## Introduction  
+**R** is a free software environment for statistical computing and graphics. In this presentation I will show how to use some of R **libraries** to download data from Eurostat using the **SDMX** dataformat.
 
 
-## What is R
+
+## What is R 
 ```{r whatisR, echo=FALSE}
 img <- readPNG("resources/RStudio.png")
 grid.raster(img)
 ```
+
+## Use of libraries 
+
+Before going through the things, we will run libraries
+```{r libraries,results='hide',tidy=FALSE,message=FALSE}
+<<libraries>>
+```
+
 
 ## What is SDMX
 
@@ -36,11 +46,7 @@ img <- readPNG("resources/sdmx.png")
 grid.raster(img)
 ```
 
-## Use of libraries
-```{r libraries,results='hide',tidy=FALSE,message=FALSE}
-<<libraries>>
-```
-Before going through the things, we will run libraries
+
 
 # Getting data
 ## Eurostat Databrowser
@@ -60,8 +66,10 @@ We download the dataset from Eurostat
 ```
 
 ## Inspecting  the data-frame
-```{r show_tsDf, results='markup',echo=FALSE}
-head(tsDf[c("FREQ","UNIT","SEX","GEO","TIME","OBS","STATUS")])
+```{r show_tsDf, results='markup',echo=2:3}
+tsDf2 <- tsDf[c("FREQ","UNIT","SEX","GEO","TIME","OBS")] 
+head(tsDf2, n = 4)
+str(tsDf2, width=50, strict.width = "cut")
 ```
 
 ## Downloading geospatial data
@@ -84,13 +92,10 @@ plot(eurMap)
 <<convert_shp>>
 ```
 
-```{r merge_data,message=FALSE,tidy=F}
+```{r merge_data,message=FALSE,tidy=F,warning=FALSE}
 <<merge_data>>
 ```
 
-```{r order_data,message=FALSE,tidy=F}
-<<order_data>> 
-```
 
 # Plotting
 ## Creating a first draft
@@ -170,6 +175,8 @@ EU 2013 Unemployment rates by NUTS2 regions, percentage of total population, bot
 * Re-using earlier work
 * Workflow with early draft that is continuously refined
 * Tight integraition wiht [git](https://github.com/Tungurahua/R_examples)
+* Drivers for different output formats (jpg, svg, etc) all the way down to interactive javascript visualizations with [rCharts](http://rcharts.io/)
+* Work without altering source data
 
 ## Discussion
 

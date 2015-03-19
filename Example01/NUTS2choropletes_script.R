@@ -6,6 +6,7 @@ library(ggmap)    # Mapping with ggplot
 library(RJSDMX)   # Query Eurostat REST-interface
 library(grid)     # Needed for unit() function
 library(rgdal)    # Provides driver to read .shp files
+library(dplyr)    # Framework for data transformation
 
 ## @knitr get_data
 # Get the data formatted as list from Eurostat
@@ -56,13 +57,15 @@ eurMapDf <- fortify(eurMap, region="NUTS_ID")
 
 
 ## @knitr merge_data
-# merge map and data
-tsMapDf <- merge(eurMapDf, tsDf, 
-                 by.x="id", by.y="GEO")
+# merge map and unemployment data
+tsMapDf <- 
+  eurMapDf %>%
+  inner_join(y = tsDf,
+             by = c("id" = "GEO")) %>%
+  mutate(id = as.factor(id)) %>%
+  arrange(order)
 
-## @knitr order_data
-# put data in correct order for plotting
-tsMapDf <- tsMapDf[order(tsMapDf$order),] 
+
 
 
 ## @knitr first_plot
