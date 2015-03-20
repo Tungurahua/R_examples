@@ -2,7 +2,10 @@
 title: "R at Ecologic Institute"
 author: "Albrecht Gradmann"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
-output: ioslides_presentation
+output:
+  ioslides_presentation:
+    fig_caption: yes
+    highlight: kate
 ---
 
 ```{r setup,include=FALSE}
@@ -163,14 +166,14 @@ Themes allow to streamline appearance of graphs to consistently meet design guid
 <<final_plot>> 
 ```
 
-EU 2013 Unemployment rates by NUTS2 regions, percentage of total population. Source: [Eurostat (tgs00010)](https://raw.githubusercontent.com/Tungurahua/R_examples/master/Example01/NUTS2choropletes_script.R)
+EU 2013 Unemployment rates by NUTS2 regions, percentage of total population. Source: [Eurostat (tgs00010)](https://github.com/Tungurahua/R_examples/blob/master/Example01/NUTS2choropletes_script.R)
 
 ## Facetted version of the map
 ```{r facetting,echo=FALSE, cache=TRUE}
 <<facetting>> 
 ```
 
-EU 2010-13 Unemployment rates by NUTS2 regions, percentage of total population Source: [Eurostat (tgs00010)](https://raw.githubusercontent.com/Tungurahua/R_examples/master/Example01/NUTS2choropletes_script.R)
+EU 2010-13 Unemployment rates by NUTS2 regions, percentage of total population Source: [Eurostat (tgs00010)](https://github.com/Tungurahua/R_examples/blob/master/Example01/NUTS2choropletes_script.R)
 
 # Another example
 ## A figure published by Eurostat
@@ -196,7 +199,8 @@ grid.raster(img)
 ```
 
 
-## Reproduced in R
+## Reproduced in R {.smaller}
+
 ```{r firstplot2,fig.cap="An initial version of the plot.",fig.width=5,fig.height=5,warning=FALSE,tidy=FALSE,fig.margin=T,include=FALSE}
 <<firstplotx>>
 ```
@@ -204,18 +208,20 @@ grid.raster(img)
 ```{r theme2,message=FALSE,warning=FALSE,tidy=FALSE,include=FALSE}
 <<themex>>
 ``` 
-
-```{r windowdressing2, message=FALSE,warning=FALSE,tidy=FALSE,echo=FALSE}
+<div class="centered">
+```{r windowdressing2,fig.width=5.5,fig.height=5.5, message=FALSE,warning=FALSE,tidy=FALSE,echo=FALSE}
 <<windowdressingx>>
 ```
+</div>
 
 
-
-
-## Apply facets to improve readability
-```{r betterplot,fig.width=6,fig.height=6,warning=FALSE,message=FALSE,echo=FALSE}
+## Apply facets to improve readability {.smaller}
+<div class="centered">
+```{r betterplot,fig.width=5.5,fig.height=5.5,warning=FALSE,message=FALSE,echo=FALSE}
 <<betterplot>>
 ```
+</div>
+
 
 # Concluding remarks
 
