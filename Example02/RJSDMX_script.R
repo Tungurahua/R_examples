@@ -116,3 +116,10 @@ gg <- gg + coord_cartesian()+facet_wrap(facets = "labels",nrow = 5)
 gg <- gg + scale_fill_brewer(type = "qual",guide=FALSE)
 gg <- gg +theme(axis.text.x=element_text(angle = 45))
 gg
+
+## @knitr move_to_web
+library(plotly)
+url<-"https://plot.ly/~tungurahua/4/"
+plotly_iframe <- paste("<iframe scrolling='no' seamless='seamless' src='", url, 
+                       "/800/600' width='800' height='600'></iframe>", sep = "")
+
