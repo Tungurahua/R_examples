@@ -2,10 +2,7 @@
 title: "R at Ecologic Institute"
 author: "Albrecht Gradmann"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
-output:
-  ioslides_presentation:
-    fig_caption: yes
-    highlight: kate
+output: ioslides_presentation
 ---
 
 ```{r setup,include=FALSE}
@@ -16,7 +13,7 @@ opts_chunk$set(message=FALSE,results='hide')
 opts_knit$set(root.dir=normalizePath('../'))
 ```
 
-```{r,cache=FALSE,eval=T,echo=FALSE}
+```{r load_files,cache=FALSE,eval=T,echo=FALSE}
 read_chunk('Example01/NUTS2choropletes_script.R')
 read_chunk('Example02/RJSDMX_script.R')
 ```
@@ -122,11 +119,6 @@ str(tsDF, width=50, strict.width = "cut")
 <<put_EU_in_focus>>
 ```
 
-## Define a theme 
-Themes allow to streamline appearance of graphs to consistently meet design guidelines
-```{r window_dressing,message=FALSE,tidy=F, include=TRUE}
-<<window_dressing>>
-```
 
 ## Some final touches
 
@@ -154,11 +146,18 @@ Themes allow to streamline appearance of graphs to consistently meet design guid
 ```
 
 
+## Define a theme 
+Themes allow to streamline appearance of graphs to consistently meet design guidelines
+```{r window_dressing,message=FALSE,tidy=F, include=TRUE,echo=TRUE}
+print("Here I am")
+
+<<window_dressing>>
+```
 
 
 ## A choroplete map
 
-```{r lastTouch, include=FALSE,cache=TRUE}
+```{r lastTouch, include=FALSE}
 <<lastTouch>>
 ```
 
@@ -169,7 +168,7 @@ Themes allow to streamline appearance of graphs to consistently meet design guid
 EU 2013 Unemployment rates by NUTS2 regions, percentage of total population. Source: [Eurostat (tgs00010)](https://github.com/Tungurahua/R_examples/blob/master/Example01/NUTS2choropletes_script.R)
 
 ## Facetted version of the map
-```{r facetting,echo=FALSE, cache=TRUE}
+```{r facetting,echo=FALSE}
 <<facetting>> 
 ```
 
@@ -222,6 +221,16 @@ grid.raster(img)
 ```
 </div>
 
+## And move to web
+```{r move_to_web,warning=FALSE,message=FALSE,echo=FALSE}
+<<betterplot>>
+```
+
+
+`r I(plotly_iframe)`
+
+
+
 
 # Concluding remarks
 
@@ -237,5 +246,7 @@ grid.raster(img)
 ## Discussion
 
 Do we need this at Ecologic? What do you think?
+Would you use R yourself (proper training given)?
+
 
 

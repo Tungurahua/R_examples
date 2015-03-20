@@ -4,10 +4,10 @@ library(maptools) # Dealing with spatial data
 library(ggplot2)  # Hadley Wickham plotting package
 library(ggmap)    # Mapping with ggplot
 library(RJSDMX)   # Query Eurostat REST-interface
-library(grid)     # Needed for unit() function
 library(rgdal)    # Provides driver to read .shp files
 library(dplyr)    # Framework for data transformation
 library(scales)   # Needed to display percentage scales
+library(grid)     # Needed for unit() function
 
 ## @knitr get_data
 # Get the data formatted as list from Eurostat
@@ -131,9 +131,9 @@ map
 
 
 ## @knitr window_dressing
-map <- map + theme_bw()
-map <- map + theme(
-    plot.background = element_blank(),
+theme_map <- function() {
+  theme_bw() + 
+    theme(plot.background = element_blank(),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     panel.border = element_blank(),
@@ -142,7 +142,9 @@ map <- map + theme(
     axis.title = element_blank(),
     legend.key.size = unit(10,"pt"),
     text=element_text(size=8),
-    legend.position=c(0.1, 0.2))
+    legend.position=c(0.1, 0.2))}
+  
+map <- map + theme_map()
 
 
 ## @knitr lastTouch
