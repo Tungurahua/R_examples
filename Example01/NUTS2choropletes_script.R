@@ -61,7 +61,7 @@ tsMapDf <- tsMapDf[order(tsMapDf$order),]
 
 
 ## @knitr first_plot
-# inverse order (to have visible borders)
+# Use ggplot to plot the data
 map <- ggplot(data=tsMapDf[which(tsMapDf$TIME == 2013),],
               aes(x=long, y=lat, group=group))
 map <- map + geom_polygon(aes(fill=OBS)) 
@@ -83,13 +83,13 @@ tsMapDf <- subset(tsMapDf,
                        lat < max(europe.limits$lat))
 
 # and re-read the plot with the new data
-map <- map %+% tsMapDf 
+map <- map %+% tsMapDf[which(tsMapDf$TIME == 2013),] 
 map
 
 
 
 ## @knitr bin_data
-map <- ggplot(data=tsMapDf,
+map <- ggplot(data=tsMapDf[which(tsMapDf$TIME == 2013),],
               aes(x=long, 
                   y=lat, 
                   group=group)) 
@@ -158,14 +158,14 @@ TM_WORLD_BORDERS3  <- spTransform(TM_WORLD_BORDERS3 ,
                       CRS("+proj=longlat +datum=WGS84")) 
 TMdf <- fortify(TM_WORLD_BORDERS3,region = "ISO2")
 
-## Wir brauchen Bosnien BA, Serbien RS, Makedonien ME, Albanine AL und Türkei 
+## Wir brauchen Bosnien BA, Serbien RS, Makedonien ME, Albanien AL und Türkei 
 TMdf <- subset(TMdf, 
                   long > min(europe.limits$lon) &
                     long < max(europe.limits$lon) & 
                     lat > min(europe.limits$lat) & 
                     lat < max(europe.limits$lat))
 
-TMdf2 <- TMdf[which(TMdf$id %in% c("BA","RS","ME","AL","TR","CH","IS")),]
+TMdf2 <- TMdf[which(TMdf$id %in% c("BA","RS","ME","AL","TR","CH","IS","MK")),]
 
 map <- map + geom_polygon(data = TMdf2,aes(x=long, 
                                           y=lat, 

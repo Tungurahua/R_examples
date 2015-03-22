@@ -22,18 +22,22 @@ read_chunk('Example02/RJSDMX_script.R')
 
 
 ## Introduction  
-**R** is a free software environment for statistical computing and graphics. In this presentation I will show how to use R to create figures from Eurostat data. The data will be download in **SDMX** format.
+**R** is a free software environment for statistical computing and graphics. In this presentation I will show how to use R to create figures from Eurostat data in **SDMX** format. We will look at two examples:
+
+* EU 2013 Unemployment rates by NUTS2 regions, percentage of total population displayed as a **choroplete map.**
+
+* Stacked bar-chart of the structure of utilised agricultural area, 2007 (% of UAA)
 
 
 
-## What is R 
+## RStudio a convenient environment to work with R
 ```{r whatisR, echo=FALSE}
 img <- readPNG("resources/RStudio.png")
 grid.raster(img)
 ```
 
 ## A large range of packages
-In R several 1000 packages are available to facilitate all kinds of statistical analysis, data-work and visualization.
+In R several 1000 packages are available to facilitate all kinds of statistical analysis, data-work and visualizations.
 
 ```{r libraries,results='hide',tidy=FALSE,message=FALSE}
 <<libraries>>
@@ -97,6 +101,7 @@ str(tsDF, width=50, strict.width = "cut")
 
 # Plotting
 ## Create a first draft
+Once the data is in a suitable format, very few lines of code are needed to create an initial figure.
 ```{r first_plot,fig.show='hide',cache=TRUE}
 <<first_plot>>
 ```
@@ -119,6 +124,11 @@ str(tsDF, width=50, strict.width = "cut")
 <<put_EU_in_focus>>
 ```
 
+## Define a theme 
+Themes allow to streamline appearance of graphs to consistently meet design guidelines
+```{r window_dressing,message=FALSE,tidy=F, include=TRUE,echo=TRUE,eval=FALSE}
+<<window_dressing>>
+```
 
 ## Some final touches
 
@@ -126,18 +136,18 @@ str(tsDF, width=50, strict.width = "cut")
 <<bin_data>>  
 ```
 
-* Bin Data (discrete scale)
-* Choose colors and position legend
-* Add country borders
-* Change projection
-* Apply the theme
+* Bin data into classes (discrete scale)
+* Choose colors 
+* Re-position legend
+* add country borders
+* drop non-EU countries
+* change projection
 
-
-```{r set_colors,message=FALSE,tidy=F,include=FALSE,cache=TRUE}
+```{r set_colors,message=FALSE,tidy=F,include=FALSE}
 <<set_colors>>
 ```
 
-```{r add_borders,message=FALSE,tidy=F,include=FALSE,cache=TRUE}
+```{r add_borders,message=FALSE,tidy=F,include=FALSE}
 <<add_borders>>
 ```
 
@@ -145,17 +155,14 @@ str(tsDF, width=50, strict.width = "cut")
 <<change_projection>>
 ```
 
-
-## Define a theme 
-Themes allow to streamline appearance of graphs to consistently meet design guidelines
-```{r window_dressing,message=FALSE,tidy=F, include=TRUE,echo=TRUE}
-print("Here I am")
-
+```{r window_dressing2,message=FALSE,tidy=F, include=TRUE,echo=FALSE}
 <<window_dressing>>
 ```
 
 
-## A choroplete map
+
+
+## The final choroplete map
 
 ```{r lastTouch, include=FALSE}
 <<lastTouch>>

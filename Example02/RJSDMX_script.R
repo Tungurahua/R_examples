@@ -95,11 +95,12 @@ theme_qual <- function(base_size=11, base_family="") {
            base_family=base_family) %+replace%
     theme(axis.title=element_blank(),
       legend.position = "bottom",
-      legend.title=element_blank())
+      legend.title=element_text(size = 8))
 }
 
 ## @knitr  windowdressingx
 gg <- gg + theme_qual()
+gg <- gg + ggtitle("Structure of utilised agricultural area, 2007 (% of UAA)")
 gg <- gg + scale_fill_brewer(type = "qual")
 gg <- gg + scale_y_continuous(labels = percent)
 gg <- gg + guides(fill = guide_legend(keywidth = 0.8, 
