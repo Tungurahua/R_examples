@@ -95,7 +95,8 @@ theme_qual <- function(base_size=11, base_family="") {
            base_family=base_family) %+replace%
     theme(axis.title=element_blank(),
       legend.position = "bottom",
-      legend.title=element_text(size = 8))
+      plot.title=element_text(size = 8),
+      legend.title=element_blank())
 }
 
 ## @knitr  windowdressingx

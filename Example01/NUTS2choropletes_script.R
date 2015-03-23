@@ -37,7 +37,6 @@ unzip("data/NUTS_2010_60M_SH.zip",
 
 ## @knitr Read_shp
 # Read administrative boundaries 
-# and set appropriate Transformation
 eurMap <- readOGR(paste0("data/NUTS_2010_60M_SH/NUTS_2010_60M_SH/",
                          "NUTS_2010_60M_SH/data"),
                   "NUTS_RG_60M_2010")
@@ -53,16 +52,6 @@ eurMapDf <- fortify(eurMap, region="NUTS_ID")
 
 
 ## @knitr merge_data
-
-# merge map and unemployment data
-#tsMapDf <- 
-#  eurMapDf %>%
-#  inner_join(y = tsDf,
-#             by = c("id" = "GEO")) %>%
-#  mutate(id = as.factor(id)) %>%
-#  arrange(order)
-
-
 # merge map and data
 tsMapDf <- merge(eurMapDf, tsDf, 
                  by.x="id", by.y="GEO")

@@ -26,11 +26,11 @@ read_chunk('Example02/RJSDMX_script.R')
 
 * EU 2013 Unemployment rates by NUTS2 regions, percentage of total population displayed as a **choroplete map.**
 
-* Stacked bar-chart of the structure of utilised agricultural area, 2007 (% of UAA)
+* Stacked bar-chart of the structure of utilised agricultural area, 2007 (% of UAA).
 
 
 
-## RStudio a convenient environment to work with R
+## Using R with RStudio IDE
 ```{r whatisR, echo=FALSE}
 img <- readPNG("resources/RStudio.png")
 grid.raster(img)
@@ -79,6 +79,7 @@ str(tsDF, width=50, strict.width = "cut")
 ```
 
 ## Download geospatial data
+We download administrative boundaries as ESRI-shapefiles.
 ```{r download_shp,message=FALSE,tidy=F,cache=TRUE}
 <<download_shp>>
 ```
@@ -159,7 +160,9 @@ Themes allow to streamline appearance of graphs to consistently meet design guid
 <<window_dressing>>
 ```
 
-
+```{r apply_theme,message=FALSE,tidy=F, include=TRUE,echo=FALSE}
+<<window_dressing>>
+```
 
 
 ## The final choroplete map

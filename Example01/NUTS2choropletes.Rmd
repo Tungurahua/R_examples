@@ -17,14 +17,14 @@ read_chunk('Example01/NUTS2choropletes_script.R')
 
 
 # Introduction
-This document shows how to create a choroplete map from Eurostat Data using R. For this example I aimed to automate the entire process from downloading the data to the creation of the figure. The idea is to present an entirely reproducible process. The text shows the overall process from a birds-eye perspective. In particular it is not intended to serve as a general introduction to R[^quickR] or a discussion of the Pros and cons of using choropletes to display data. 
+This tutorial shows the process of creating plot in R that visualizes the EU 2013 unemployment rates in the EU as percentage of total population. The final graphic will be a so-called choroplete map. This is a map where geographical regions are colored by some kind of metric. For this kind of figure to work well, the individual regions should be roughly about the same size. For a more in-depth discussion you may refer to Leland Wilkinsons Grammar of Graphics [^Wilkinson] which we have available at Ecologic. The theoretical foundations presented in this book lay the foundations for the `ggplot2`package by Hadley Wickham [^Wickham], the approach used in this document 
 
-This tutorial shows the process of creating plot in R that visualizes the EU 2013 unemployment rates in the EU as percentage of total population. The final graphic will be a so-called choroplete map. This is a map where geographical regions are colored by some kind of metric. For this kind of figure to work well the individual regions should be roughly about the same size. For a more in-depth discussion you may refer to Leland Wilkinsons Grammar of Graphics [^Wilkinson] which we have available at Ecologic. The theoretical foundations presented in this book lay the foundations for the `ggplot2`package by Hadley Wickham [^Wickham], the approach used in this document 
+The text shows the overall process from a birds-eye perspective. In particular it is not intended to serve as a general introduction to R[^quickR] or a discussion of the pros and cons of using choropletes to display data. 
 
 I plan to create other handouts in the future. Please let me know if you would like to request a specific topic.
 
 # Setting the scene
-This tutorial gives a brief walk-through of the steps needed to create a choroplete map of EU 2013 unemployment rates by  NUTS-2 regions as a percentage of total population. Unemployment data as well as the geospatial data will be taken from Eurostat. Apart from unemployment data Eurostat provides several datasets on NUTS2 or even NUTS3 level. Adapting the present example to other datasets requires only minor modifications.
+This tutorial gives a brief walk-through of the steps needed to create a choroplete map of EU 2013 unemployment rates by  NUTS-2 regions as a percentage of total population. Unemployment data as well as the geospatial data will be taken from Eurostat. Apart from unemployment data, Eurostat provides several datasets on NUTS2 or even NUTS3 level. Adapting the present example to other datasets will require only minor modifications.
 
 The example relies on a series of libraries which have to be installed on your system. Package installation in R is a simple and standard task and it can be done in several ways. For more information, you can either type  `help("install.packages")` in the R Console or look for one of the numerous tutorials on the internet[^howto_install]. Below is the series of commands you need to run first to attach the packages to your R session.
 
@@ -130,10 +130,8 @@ Merging the unemployment and geographical data is achieved by telling R the resp
 <<merge_data>>
 ```
 
-=======
-
 As noted before, the records of the merged dataframe have to be sorted in the order in which they will be drawn to the graphics device. With the merge of the two datasets we have concluded all steps in the process of gathering data and preparing it for plotting. 
->>>>>>> 8da57a6a76f0f5af3cb0a574a82f0bace4c37b63
+
 
 
 # Plotting the data
