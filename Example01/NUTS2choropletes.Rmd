@@ -11,7 +11,7 @@ opts_chunk$set(message=FALSE,results='hide')
 opts_knit$set(root.dir=normalizePath('../'))
 ```
 
-```{r,cache=FALSE,eval=T,echo=FALSE}
+```{r read_ext,cache=FALSE,eval=T,echo=FALSE}
 read_chunk('Example01/NUTS2choropletes_script.R')
 ```
 
@@ -130,8 +130,11 @@ Merging the unemployment and geographical data is achieved by telling R the resp
 <<merge_data>>
 ```
 
-As noted before, the records of the merged dataframe have to be sorted in the order in which they will be drawn to the graphics device.
-With the merge of the two datasets we have concluded all steps in the process of gathering data and preparing it for plotting. 
+=======
+
+As noted before, the records of the merged dataframe have to be sorted in the order in which they will be drawn to the graphics device. With the merge of the two datasets we have concluded all steps in the process of gathering data and preparing it for plotting. 
+>>>>>>> 8da57a6a76f0f5af3cb0a574a82f0bace4c37b63
+
 
 # Plotting the data
 The remainder of this document will deal with the process of a final plot from an initial draft. The steps shown provide examples of steps commonly carried out when producing a figure. It goes without saying that they are to a great extent matter of subjective taste. Maps are a special kind of display in which the general visualization is less strictly defined by the underlying data than e.g. a bar graph. While all of the following steps are in some way influenced by an underlying theory of perception, creating maps remains to a large extent an art. 

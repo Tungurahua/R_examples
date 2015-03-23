@@ -6,24 +6,20 @@ library(ggmap)    # Mapping with ggplot
 library(RJSDMX)   # Query Eurostat REST-interface
 library(rgdal)    # Provides driver to read .shp files
 library(dplyr)    # Framework for data transformation
+library(scales)   # Needed to display percentage scales
 library(grid)     # Needed for unit() function
 
 ## @knitr get_data
 # Get the data formatted as list from Eurostat
 tsList <- getTimeSeries('EUROSTAT',
                        'tgs00010.A.PC.T.*',
-                       start = "2013",
+                       start = "2010",
                        end="2013")
 
 ## @knitr convert_data
 # Convert the list into a dataframe
 tsDf <- sdmxdf(tsList,meta = T)
 
-
-## @knitr subset_data
-# Subset to exclude Turkey
-tsDf <-  subset(tsDf, 
-                   !grepl(c("TR"),GEO))
 
 
 ## @knitr download_shp
@@ -57,20 +53,26 @@ eurMapDf <- fortify(eurMap, region="NUTS_ID")
 
 
 ## @knitr merge_data
-# merge map and unemployment data
-tsMapDf <- 
-  eurMapDf %>%
-  inner_join(y = tsDf,
-             by = c("id" = "GEO")) %>%
-  mutate(id = as.factor(id)) %>%
-  arrange(order)
 
+# merge map and unemployment data
+#tsMapDf <- 
+#  eurMapDf %>%
+#  inner_join(y = tsDf,
+#             by = c("id" = "GEO")) %>%
+#  mutate(id = as.factor(id)) %>%
+#  arrange(order)
+
+
+# merge map and data
+tsMapDf <- merge(eurMapDf, tsDf, 
+                 by.x="id", by.y="GEO")
+tsMapDf <- tsMapDf[order(tsMapDf$order),] 
 
 
 
 ## @knitr first_plot
-# inverse order (to have visible borders)
-map <- ggplot(data=tsMapDf,
+# Use ggplot to plot the data
+map <- ggplot(data=tsMapDf[which(tsMapDf$TIME == 2013),],
               aes(x=long, y=lat, group=group))
 map <- map + geom_polygon(aes(fill=OBS)) 
 map
@@ -91,13 +93,13 @@ tsMapDf <- subset(tsMapDf,
                        lat < max(europe.limits$lat))
 
 # and re-read the plot with the new data
-map <- map %+% tsMapDf 
+map <- map %+% tsMapDf[which(tsMapDf$TIME == 2013),] 
 map
 
 
 
 ## @knitr bin_data
-map <- ggplot(data=tsMapDf,
+map <- ggplot(data=tsMapDf[which(tsMapDf$TIME == 2013),],
               aes(x=long, 
                   y=lat, 
                   group=group)) 
@@ -140,8 +142,8 @@ map
 
 ## @knitr window_dressing
 theme_map <- function() {
-  theme_bw() %+replace%
-  theme(plot.background = element_blank(),
+  theme_bw() + 
+    theme(plot.background = element_blank(),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     panel.border = element_blank(),
@@ -151,6 +153,7 @@ theme_map <- function() {
     legend.key.size = unit(10,"pt"),
     text=element_text(size=8),
     legend.position=c(0.1, 0.2))}
+
 
 ## @knitr apply_theme
 map <- map + theme_map()
@@ -166,14 +169,14 @@ TM_WORLD_BORDERS3  <- spTransform(TM_WORLD_BORDERS3 ,
                       CRS("+proj=longlat +datum=WGS84")) 
 TMdf <- fortify(TM_WORLD_BORDERS3,region = "ISO2")
 
-## Wir brauchen Bosnien BA, Serbien RS, Makedonien ME, Albanine AL und Türkei 
+## Wir brauchen Bosnien BA, Serbien RS, Makedonien ME, Albanien AL und Türkei 
 TMdf <- subset(TMdf, 
                   long > min(europe.limits$lon) &
                     long < max(europe.limits$lon) & 
                     lat > min(europe.limits$lat) & 
                     lat < max(europe.limits$lat))
 
-TMdf2 <- TMdf[which(TMdf$id %in% c("BA","RS","ME","AL","TR","CH","IS")),]
+TMdf2 <- TMdf[which(TMdf$id %in% c("BA","RS","ME","AL","TR","CH","IS","MK")),]
 
 map <- map + geom_polygon(data = TMdf2,aes(x=long, 
                                           y=lat, 
@@ -186,4 +189,7 @@ map <- map + geom_path(data=TMdf2, color='black', size=0.01)
 map 
 
 
-
+## @knitr facetting
+map <- map %+% tsMapDf
+map <- map + facet_wrap(facets = "TIME")
+map + theme(legend.position=c(0.05, 0.2))

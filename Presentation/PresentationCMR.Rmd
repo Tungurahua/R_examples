@@ -1,0 +1,260 @@
+---
+title: "R at Ecologic Institute"
+author: "Albrecht Gradmann"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: ioslides_presentation
+---
+
+```{r setup,include=FALSE}
+library(knitr)
+library(png)
+library(grid)
+opts_chunk$set(message=FALSE,results='hide')
+opts_knit$set(root.dir=normalizePath('../'))
+```
+
+```{r load_files,cache=FALSE,eval=T,echo=FALSE}
+read_chunk('Example01/NUTS2choropletes_script.R')
+read_chunk('Example02/RJSDMX_script.R')
+```
+
+
+
+
+## Introduction  
+**R** is a free software environment for statistical computing and graphics. In this presentation I will show how to use R to create figures from Eurostat data in **SDMX** format. We will look at two examples:
+
+* EU 2013 Unemployment rates by NUTS2 regions, percentage of total population displayed as a **choroplete map.**
+
+* Stacked bar-chart of the structure of utilised agricultural area, 2007 (% of UAA)
+
+
+
+## RStudio a convenient environment to work with R
+```{r whatisR, echo=FALSE}
+img <- readPNG("resources/RStudio.png")
+grid.raster(img)
+```
+
+## A large range of packages
+In R several 1000 packages are available to facilitate all kinds of statistical analysis, data-work and visualizations.
+
+```{r libraries,results='hide',tidy=FALSE,message=FALSE}
+<<libraries>>
+```
+
+
+## SDMX a Standard for public data
+Statistical Data and Metadata Exchange (2001)
+
+```{r sdmx, echo=FALSE}
+img <- readPNG("resources/sdmx.png")
+grid.raster(img)
+```
+
+
+
+# Getting data
+## Instead of the Eurostat Databrowser ...
+```{r eurostat, echo=FALSE}
+img <- readPNG("resources/Eurostat_REST.PNG")
+grid.raster(img)
+```
+
+## ... use RJSDMX methods
+We download the dataset from Eurostat
+```{r get_data,message=FALSE,tidy=FALSE,cache=TRUE}
+<<get_data>>
+```
+
+```{r convert_data,message=FALSE,tidy=FALSE,cache=TRUE}
+<<convert_data>>
+```
+
+## Inspect the data-frame
+```{r show_tsDf, results='markup',echo=2:3}
+tsDF <- tsDf[c("FREQ","UNIT","SEX","GEO","TIME","OBS")] 
+head(tsDF, n = 4)
+str(tsDF, width=50, strict.width = "cut")
+```
+
+## Download geospatial data
+```{r download_shp,message=FALSE,tidy=F,cache=TRUE}
+<<download_shp>>
+```
+
+## Process geospatial data
+```{r Read_shp,message=FALSE,tidy=F,cache=TRUE,warning=FALSE,results='hide'}
+<<Read_shp>> 
+```
+
+
+## Merge and order data
+```{r convert_shp,message=FALSE,tidy=F,warning=FALSE,results='hide',cache=TRUE}
+<<convert_shp>>
+```
+
+```{r merge_data,message=FALSE,tidy=F,warning=FALSE,cache=TRUE}
+<<merge_data>>
+```
+
+
+# Plotting
+## Create a first draft
+Once the data is in a suitable format, very few lines of code are needed to create an initial figure.
+```{r first_plot,fig.show='hide',cache=TRUE}
+<<first_plot>>
+```
+
+## Create a first draft
+```{r first_plot2,echo=FALSE,fig.show='asis',cache=TRUE}
+<<first_plot>>
+```
+
+
+## Put Europe into focus
+
+```{r put_EU_in_focus,fig.show='hide',cache=TRUE}
+<<put_EU_in_focus>>
+```
+
+## Put Europe into focus
+
+```{r put_EU_in_focus2,echo=FALSE,fig.show='asis',cache=TRUE}
+<<put_EU_in_focus>>
+```
+
+## Define a theme 
+Themes allow to streamline appearance of graphs to consistently meet design guidelines
+```{r window_dressing,message=FALSE,tidy=F, include=TRUE,echo=TRUE,eval=FALSE}
+<<window_dressing>>
+```
+
+## Some final touches
+
+```{r bin_data,fig.show='hide',include=FALSE,cache=TRUE}
+<<bin_data>>  
+```
+
+* Bin data into classes (discrete scale)
+* Choose colors 
+* Re-position legend
+* add country borders
+* drop non-EU countries
+* change projection
+
+```{r set_colors,message=FALSE,tidy=F,include=FALSE}
+<<set_colors>>
+```
+
+```{r add_borders,message=FALSE,tidy=F,include=FALSE}
+<<add_borders>>
+```
+
+```{r change_projection,message=FALSE,tidy=F,include=FALSE}
+<<change_projection>>
+```
+
+```{r window_dressing2,message=FALSE,tidy=F, include=TRUE,echo=FALSE}
+<<window_dressing>>
+```
+
+
+
+
+## The final choroplete map
+
+```{r lastTouch, include=FALSE}
+<<lastTouch>>
+```
+
+```{r final_plot,echo=FALSE}
+<<final_plot>> 
+```
+
+EU 2013 Unemployment rates by NUTS2 regions, percentage of total population. Source: [Eurostat (tgs00010)](https://github.com/Tungurahua/R_examples/blob/master/Example01/NUTS2choropletes_script.R)
+
+## Facetted version of the map
+```{r facetting,echo=FALSE}
+<<facetting>> 
+```
+
+EU 2010-13 Unemployment rates by NUTS2 regions, percentage of total population Source: [Eurostat (tgs00010)](https://github.com/Tungurahua/R_examples/blob/master/Example01/NUTS2choropletes_script.R)
+
+# Another example
+## A figure published by Eurostat
+```{r eurostatfig, echo=FALSE}
+img <- readPNG("resources/fig25_eurostat.PNG")
+grid.raster(img)
+```
+
+```{r getDatax,cache=TRUE,tidy=FALSE,include=FALSE}
+<<getDatax>>
+```
+
+```{r getCodesVARIABLE,cache=TRUE,tidy=FALSE,echo=-1,include=FALSE}
+<<getCodesVARIABLE>>
+```
+
+```{r headVARdic,results='markup',include=FALSE}
+<<headVARdic>>
+```
+
+```{r dplyr, warning=FALSE,message=FALSE,tidy=FALSE,include=FALSE}
+<<dplyr>>
+```
+
+
+## Reproduced in R {.smaller}
+
+```{r firstplot2,fig.cap="An initial version of the plot.",fig.width=5,fig.height=5,warning=FALSE,tidy=FALSE,fig.margin=T,include=FALSE}
+<<firstplotx>>
+```
+
+```{r theme2,message=FALSE,warning=FALSE,tidy=FALSE,include=FALSE}
+<<themex>>
+``` 
+<div class="centered">
+```{r windowdressing2,fig.width=5.5,fig.height=5.5, message=FALSE,warning=FALSE,tidy=FALSE,echo=FALSE}
+<<windowdressingx>>
+```
+</div>
+
+
+## Apply facets to improve readability {.smaller}
+<div class="centered">
+```{r betterplot,fig.width=5.5,fig.height=5.5,warning=FALSE,message=FALSE,echo=FALSE}
+<<betterplot>>
+```
+</div>
+
+## And move to web
+```{r move_to_web,warning=FALSE,message=FALSE,echo=FALSE}
+<<betterplot>>
+```
+
+
+`r I(plotly_iframe)`
+
+
+
+
+# Concluding remarks
+
+## Advantages of using R
+* Reproducable work
+* Unambiguous reference
+* Re-using earlier work
+* Workflow with early draft that is continuously refined
+* Tight integration with [git](https://github.com/Tungurahua/R_examples)
+* Drivers for different output formats (jpg, svg, etc) all the way down to interactive javascript visualizations with [rCharts](http://rcharts.io/) or [plot.ly](http://plot.ly)
+* Work without altering source data
+
+## Discussion
+* Is this needed at Ecologic? 
+* Would you use R yourself (proper training given)?
+* Do you see reproducability requested in calls or projects?
+
+
+
+

@@ -13,6 +13,9 @@ opts_knit$set(root.dir=normalizePath('../'))
 ```
 
 
+```{r read_ext,cache=FALSE,eval=T,echo=FALSE}
+read_chunk('Example02/RJSDMX_script.R')
+```
 
 
 # Introduction
@@ -56,14 +59,11 @@ Before going through the individual steps presented below, you need to load the 
 \newpage
 
 ```{r libraries,results='hide',message=FALSE}
-library(ggplot2)  # Hadley Wickhams plotting package
-library(RJSDMX)   # Provides Access to Eurostats REST-interface
-library(dplyr)    # Aids manipulation of data
-library(scales)   # Needed to display percentage scales
-
+<<librariesx>>
 ```
+
 ```{r layout_libs,echo=FALSE}
-library(xtable)
+<<layout_libs>>
 ```
 If you receive error messages at this stage, you probably have not yet installed these packages on your system.  Package installation in R is a simple and standard task and it can be done in several ways. For more information, you can either type  `help("install.packages")` in the R Console or look for one of the numerous tutorials on the internet[^howto_install]. 
 
@@ -79,7 +79,7 @@ Although I tried to design this as a self-contained example it might not work as
 To programmatically access the Eurostat database we first need to assemble a so-called REST-id. This is a textual representation of the data we intend to download. Below is the specific REST-id for the data used to create the figures later in this document.
 
 ```{r idString,eval=FALSE}
-idString = "ef_ov_lusum.A.TOTAL.D+E+F+G+H.HA.TOTAL.*"
+<<idString>>
 ```
 While this is rather cryptic at first sight, you should note that the id starts out with the dataset code `ef_ov_lusum`. You can use this to interactively browse the dataset on the Eurostat homepage using the Eurostat-Data-Explorer. Figure \ref{fig:Data_browser} shows a session of this application. The highlighted tabs contain the information necessary to formulate the REST-id.
 
@@ -92,58 +92,29 @@ While this is rather cryptic at first sight, you should note that the id starts 
 
 The translation of the information from the online Data-Explorer into the REST-id is possible if you know the generalized form of the REST-id. In our case this is:
 ```{r FullREST,message=TRUE, results='markup',tidy=FALSE,eval=FALSE }
-idString = "[DataID].  # insert data-code here
-            [FREQ].    # Frequency of data A -> Annual
-            [TERRTYPO].# All agricultural holdings -> TOTAL
-            [VARIABLE].# see discussion below
-            [UNIT].    # Unit of data HA -> hectar
-            [AGRAREA]. # All types of territory -> TOTAL
-            [GEO]      # Countries *-> select all"
+<<FullREST>>
 ```
 To create the specific ID it is necessary to replace the parts in square brackets with your selection where multiple selections are chained with `+` and a selection of all available items is abbreviated as` *`. Manually building the REST call is not an easy task. While Eurostat provides a Rest-builder[^restbuild] tool on their website, it is implemented only for very few datasets. Fortunately the developer of `RSDMX` is currently working on a java tool which will provide a gui for the creation of REST-ids. Chances are good that this tool will be available once this document is finalized, so I will not bother to discuss alternative methods of assembling REST-ids here.[^javatool] However, if you are faced with the task of building a REST-id and the tool is not available yet, please get in touch with me so I can provide you with an alternative work-flow.
 
 Using this REST-id we can issue the following commands to retrieve the data from Eurostat. The actual work is done by the `getSdmx()` function which will return an object of type `list`. For the subsequent steps we need to transform the list into a `data.frame`.
 
 
-```{r getData,cache=TRUE,tidy=FALSE}
-# Define idString
-idString = "ef_ov_lusum.A.TOTAL.D+E+F+G+H.HA.TOTAL.*"
-
-# Retrieve data from Eurostat
-listSdmx <- getSDMX(provider = "EUROSTAT",
-                    id = idString,
-                    start = "2007",
-                    end="2007")
-
-# Re-format into a dataframe
-dfSdmx <- sdmxdf(listSdmx, meta = T)
+```{r getDatax,cache=TRUE,tidy=FALSE}
+<<getDatax>>
 ```
 We can look at the first few lines of the retrieved using the `head()` function. You will note that the downloaded dataset does contain only the variable codes. The full name of a variable (e.g. Austria for AT) is stored in separate tables for reasons of data size and consistency.
 
 ```{r headsdmx,results='markup',echo=-3}
-# Display the first 6 lines of dfSdmx, suppressing
-# columns 1 and 4
-options(width = 286)
-head(dfSdmx[-c(1,4)])
+<<headsdmx>>
 ```
 Since we do not want to label the graph with these codes, we also need to download the dictionary for `VARIABLE`. Again, we will inspect the first lines of this dictionary.
 
 ```{r getCodesVARIABLE,cache=TRUE,tidy=FALSE,echo=-1}
-options(width = 83)
-# get dictionary for VARIABLE
-VARIABLE_Codes <- getCodes(provider = "EUROSTAT",
-           flow = "ef_ov_lusum",
-           dimension = "VARIABLE")
-
-# convert it into a dataframe
-VARIABLE_Codes <- data.frame(VARIABLE=names(VARIABLE_Codes),
-                             labels=unlist(VARIABLE_Codes),
-                             row.names=NULL)
-
+<<getCodesVARIABLE>>
 ```
+
 ```{r headVARdic,results='markup'}
-# Display the first 6 lines of VARIABLE_Codes
-head(VARIABLE_Codes)
+<<headVARdic>>
 ```
 
 If you have reproduced the data on your computer, you might notice that the REST-id above contains different codes for farming practices than in the original figure. The reason is that the classes selected in the original figure do not add up to 100\% of the utilizes agricultural area (UAA). Figure \ref{fig:catclass} which is taken from a Euro stat publication [^fss-slov] shows that the sub-categories of the total area of agricultural holdings is made up of (H) Other area, (D) Arable Land, (E) Kitchen Garden, (F) Permanent Pasture and Meadows and (G) Permanent Crops. The category 'Forage' used in the original figure is a sub-category of Arable Land. 
@@ -178,22 +149,7 @@ Before plotting the data we need to take some additional steps to re-organize th
 The package `dplyr` provides a convenient syntax for carrying out these steps.[^dplyr] Some of the label names will be changed to minimize the space taken up by the legend of the plot.
 
 ```{r dplyr, warning=FALSE,message=FALSE,tidy=FALSE}
-# use dplyr for the following lines
-dfSdmx <- 
-  dfSdmx %>%
-  inner_join(VARIABLE_Codes)%>%
-  select(GEO, VARIABLE,labels, OBS) %>%
-  filter(!GEO %in% c("CH","FX")) %>%
-  group_by(GEO) %>%
-  mutate(PC=OBS/sum(OBS))
-
-# Re-order GEO to display countries in alphabetical order
-dfSdmx$GEO <-  factor(dfSdmx$GEO, levels = rev(levels(dfSdmx$GEO)))
-
-# Re-name some VARIABLE levels for smaller legend
-levels(dfSdmx$labels)[24] <- "Permanent grassland and meadows"
-levels(dfSdmx$labels)[16] <- "Other (incl. forests)"
-levels(dfSdmx$GEO)[17] <- "FR"
+<<dplyr>>
 ```
 [^dplyr]: An introduction to dplyr \newline http://cran.rstudio.com/web/packages/dplyr/vignettes/introduction.html
 
@@ -206,36 +162,18 @@ An initial version of the plot can be created with the following lines of code. 
 \end{itemize}
 
 ```{r firstplot,fig.cap="An initial version of the plot.",fig.width=5,fig.height=5,warning=FALSE,tidy=FALSE,fig.margin=T}
-gg <- ggplot(data=dfSdmx, aes(x=GEO,y=PC,fill=labels,order=labels)  )
-gg <- gg + geom_bar(stat="identity",width=0.5) 
-gg <- gg + coord_flip() 
-gg <- gg + theme(legend.position="bottom") 
-gg
+<<firstplotx>>
 ```
 
 # Refine appearance
 Here we ma
 
 ```{r theme,message=FALSE,warning=FALSE,tidy=FALSE,}
-theme_qual <- function(base_size=11, base_family="") {
-  require(grid)
-  theme_bw(base_size=base_size, 
-           base_family=base_family) %+replace%
-    theme(axis.title=element_blank(),
-      legend.position = "bottom",
-      legend.title=element_blank())
-}
+<<themex>>
 ``` 
 
-```{r windowdressing,fig.cap="A second version of the plot with changes made to several theme variables.",fig.width=5,fig.height=5,message=FALSE,warning=FALSE,tidy=FALSE,}
-gg <- gg + theme_qual()
-gg <- gg + scale_fill_brewer(type = "qual")
-gg <- gg + scale_y_continuous(labels = percent)
-gg <- gg + guides(fill = guide_legend(keywidth = 0.8, 
-                                      keyheight = 0.8,
-                                      nrow = 2,
-                                      byrow = TRUE))  
-gg
+```{r windowdressing, fig.cap="A second version of the plot with changes made to several theme variables.",fig.width=5,fig.height=5,message=FALSE,warning=FALSE,tidy=FALSE,}
+<<windowdressingx>>
 ```
 
 # An alternative Plot
@@ -243,13 +181,7 @@ gg
 An alternative version of the plot is given below. Using a technique called 'faceting', the different variable levels are allotted to different sub-panels of the graphic. This allows direct comparison for each category.
 
 ```{r betterplot,fig.cap="Using sub-panels to plot individual variables",fig.width=6,fig.height=6,warning=FALSE,message=FALSE}
-dfSdmx$GEO <-  factor(dfSdmx$GEO, levels = rev(levels(dfSdmx$GEO)))
-
-gg <- gg %+% dfSdmx
-gg <- gg + coord_cartesian()+facet_wrap(facets = "labels",nrow = 5)
-gg <- gg + scale_fill_brewer(type = "qual",guide=FALSE)
-gg <- gg +theme(axis.text.x=element_text(angle = 45))
-gg
+<<betterplot>>
 ```
 
 
