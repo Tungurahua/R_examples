@@ -19,24 +19,11 @@ gadm3 <- getData('GADM', country='DEU', level=3,path = "data/")
 
 
 ## @knitr select_data
-# Subset to those named in "kommunen" for which Antwort=TRUE
-#gadm3 <- subset(gadm3, NAME_3 %in% kommunen[which(kommunen$Antwort==TRUE),]$gadm3)
-
-# take polygon centers for labelling
-# getting geocodes would be more exact
-#NKInames <- as.data.frame(coordinates(gadm3))
-#NKInames$label <- gadm3@data$NAME_3 
-#names(NKInames) <- c("x","y","label")
-
-# Make the labels from the "Kommunen" table available
-#NKInames <- merge(NKInames,kommunen[,2:5],by.x = "label",by.y= "gadm3", )
-#head(NKInames)
-
-
+# retrieve geolocations from Google
 labelsTRUE <- c("flensburg, germany"="Flensburg", 
                 "steinfurt, germany"="Steinfurt", 
                 "herten, germany"="Herten", 
-                "gÃ¶ttingen, germany"="GÃ¶ttingen", 
+                "göttingen, germany"="Göttingen", 
                 "frankfurt, germany"="Frankfurt", 
                 "nalbach, germany"="Nalbach", 
                 "neumarkt in der oberpfalz, germany"="Neumarkt", 
@@ -46,7 +33,7 @@ labelsTRUE <- c("flensburg, germany"="Flensburg",
 
 labelsFALSE <- c("sankt ingbert, germany"="St. Ingbert", 
                  "rheine, germany"="Rheine", 
-                 "osnabrÃ¼ck, germany"="OsnabrÃ¼ck", 
+                 "osnabrück, germany"="Osnabrück", 
                  "enkenbach-alsenborn, germany"="Enkenbach-Alsenborn", 
                  "marburg-biedenkopf, germany"="Marburg-Biedenkopf",
                  "heidelberg, germany"="Heidelberg", 

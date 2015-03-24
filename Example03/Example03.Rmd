@@ -3,10 +3,11 @@ title: "Creating a Map with location-markers"
 author: "Albrecht Gradmann"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: pdf_document
+classoption: a4paper
 ---
 ```{r setup,include=FALSE}
 library(knitr)
-opts_chunk$set(message=FALSE,results='hide')
+opts_chunk$set(message=FALSE,results='hide',warning=FALSE)
 opts_knit$set(root.dir=normalizePath('../'))
 ```
 

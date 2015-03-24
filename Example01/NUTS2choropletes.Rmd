@@ -3,6 +3,7 @@ title: "Creating NUTS-2 Choropletes from Eurostat Data"
 author: "Albrecht Gradmann"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: rmarkdown::tufte_handout
+classoption: a4paper
 ---
 
 ```{r setup,include=FALSE}
