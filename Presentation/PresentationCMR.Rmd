@@ -26,7 +26,7 @@ read_chunk('Example02/RJSDMX_script.R')
 
 * EU 2013 Unemployment rates by NUTS2 regions, percentage of total population displayed as a **choroplete map.**
 
-* Stacked bar-chart of the structure of utilised agricultural area, 2007 (% of UAA).
+* **Stacked bar-chart** of the structure of utilised agricultural area, 2007 (% of UAA).
 
 
 
@@ -39,7 +39,7 @@ grid.raster(img)
 ## A large range of packages
 In R several 1000 packages are available to facilitate all kinds of statistical analysis, data-work and visualizations.
 
-```{r libraries,results='hide',tidy=FALSE,message=FALSE}
+```{r libraries,results='hide',tidy=FALSE,message=FALSE,warning=FALSE}
 <<libraries>>
 ```
 
@@ -62,7 +62,7 @@ grid.raster(img)
 ```
 
 ## ... use RJSDMX methods
-We download the dataset from Eurostat
+This provides an entirely programmatic approach for data retrieval.
 ```{r get_data,message=FALSE,tidy=FALSE,cache=TRUE}
 <<get_data>>
 ```
@@ -79,18 +79,20 @@ str(tsDF, width=50, strict.width = "cut")
 ```
 
 ## Download geospatial data
-We download administrative boundaries as ESRI-shapefiles.
+Administrative boundaries as ESRI-shapefiles, a popular geospatial vector data format for geographic information system (GIS) software
 ```{r download_shp,message=FALSE,tidy=F,cache=TRUE}
 <<download_shp>>
 ```
 
 ## Process geospatial data
+Using contributed packages, Rs functionality can be extended to perform GIS functionalities.
 ```{r Read_shp,message=FALSE,tidy=F,cache=TRUE,warning=FALSE,results='hide'}
 <<Read_shp>> 
 ```
 
 
 ## Merge and order data
+As a final step in the data retrieval process, unemployment data has to be linked to the shapefiles.
 ```{r convert_shp,message=FALSE,tidy=F,warning=FALSE,results='hide',cache=TRUE}
 <<convert_shp>>
 ```
@@ -254,9 +256,13 @@ grid.raster(img)
 * Work without altering source data
 
 ## Discussion
-* Is this needed at Ecologic? 
+* Are Rs functionalities needed at Ecologic? 
 * Would you use R yourself (proper training given)?
-* Do you see reproducability requested in calls or projects?
+* Have you encountered R in project work?
+* Do you see reproducibility requested in calls or projects?
+* Which tools do you use to create figures, download data etc.? 
+* ...
+
 
 
 
