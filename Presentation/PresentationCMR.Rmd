@@ -79,7 +79,7 @@ str(tsDF, width=50, strict.width = "cut")
 ```
 
 ## Download geospatial data
-Administrative boundaries as ESRI-shapefiles, a popular geospatial vector data format for geographic information system (GIS) software
+Administrative boundaries as ESRI-shapefiles, a popular geospatial vector data format for geographic information system (GIS) software.
 ```{r download_shp,message=FALSE,tidy=F,cache=TRUE}
 <<download_shp>>
 ```
@@ -128,7 +128,7 @@ Once the data is in a suitable format, very few lines of code are needed to crea
 ```
 
 ## Define a theme 
-Themes allow to streamline appearance of graphs to consistently meet design guidelines
+Themes allow to streamline appearance of graphs to consistently meet design guidelines.
 ```{r window_dressing,message=FALSE,tidy=F, include=TRUE,echo=TRUE,eval=FALSE}
 <<window_dressing>>
 ```
@@ -184,7 +184,7 @@ EU 2013 Unemployment rates by NUTS2 regions, percentage of total population. Sou
 <<facetting>> 
 ```
 
-EU 2010-13 Unemployment rates by NUTS2 regions, percentage of total population Source: [Eurostat (tgs00010)](https://github.com/Tungurahua/R_examples/blob/master/Example01/NUTS2choropletes_script.R)
+EU 2010-13 Unemployment rates by NUTS2 regions, percentage of total population. Source: [Eurostat (tgs00010)](https://github.com/Tungurahua/R_examples/blob/master/Example01/NUTS2choropletes_script.R)
 
 # Another example
 ## A figure published by Eurostat
@@ -249,18 +249,21 @@ grid.raster(img)
 ## Advantages of using R
 * Reproducable work
 * Unambiguous reference
-* Re-using earlier work
+* Allows to re-use and re-purpose earlier work
 * Workflow with early draft that is continuously refined
 * Tight integration with [git](https://github.com/Tungurahua/R_examples)
-* Drivers for different output formats (jpg, svg, etc) all the way down to interactive javascript visualizations with [rCharts](http://rcharts.io/) or [plot.ly](http://plot.ly)
+* Drivers for different output formats (jpg, svg, etc) all the way down to interactive javascript visualizations with [rCharts](http://rcharts.io/), [plot.ly](http://plot.ly), [shinyApps](http://shiny.rstudio.com/) ...
 * Work without altering source data
+* Literate programming and single source publishing
+* Open source (... but there is nothing like a free lunch)
+
 
 ## Discussion
 * Are Rs functionalities needed at Ecologic? 
 * Would you use R yourself (proper training given)?
 * Have you encountered R in project work?
 * Do you see reproducibility requested in calls or projects?
-* Which tools do you use to create figures, download data etc.? 
+* Which tools do you currently use to create figures, download data etc.? 
 * ...
 
 
