@@ -251,7 +251,7 @@ grid.raster(img)
 * Unambiguous reference
 * Allows to re-use and re-purpose earlier work
 * Workflow with early draft that is continuously refined
-* Tight integration with [git](https://github.com/Tungurahua/R_examples)
+* Tight integration with [git](https://github.com/Tungurahua/R_examples) (collaboration and quality control)
 * Drivers for different output formats (jpg, svg, etc) all the way down to interactive javascript visualizations with [rCharts](http://rcharts.io/), [plot.ly](http://plot.ly), [shinyApps](http://shiny.rstudio.com/) ...
 * Work without altering source data
 * Literate programming and single source publishing
