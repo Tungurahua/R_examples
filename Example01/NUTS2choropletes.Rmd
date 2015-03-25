@@ -31,7 +31,7 @@ The example relies on a series of libraries which have to be installed on your s
 
 If you want to reproduce the results present in this document, you can copy-paste the code snippets into an R session. If you prefer the original source files, please send me an email and I will provide them happily. 
 
-```{r libraries,results='hide',tidy=FALSE,message=FALSE}
+```{r libraries,results='hide',tidy=FALSE,message=FALSE,error=FALSE,warning=FALSE}
 <<libraries>>
 ```
 

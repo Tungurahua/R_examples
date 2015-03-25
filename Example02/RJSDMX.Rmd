@@ -59,7 +59,7 @@ If you want to avoid copy-pasting the snippets from the pdf into a R session, yo
 Before going through the individual steps presented below, you need to load the following libraries:
 \newpage
 
-```{r libraries,results='hide',message=FALSE,warning=FALSE}
+```{r libraries,results='hide',message=FALSE,warning=FALSE,error=FALSE}
 <<librariesx>>
 ```
 
